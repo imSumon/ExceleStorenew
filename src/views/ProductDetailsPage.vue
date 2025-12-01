@@ -269,7 +269,7 @@ const decreaseQuantity = () => {
 .product-details-page {
   min-height: 100vh;
   background: #fff;
-  padding: 20px;
+  padding: 120px 20px 20px;
 }
 
 .product-details-container {
@@ -768,7 +768,7 @@ const decreaseQuantity = () => {
 
 @media (max-width: 768px) {
   .product-details-page {
-    padding: 10px;
+    padding: 100px 10px 10px;
   }
 
   .sticky-top-bar {
