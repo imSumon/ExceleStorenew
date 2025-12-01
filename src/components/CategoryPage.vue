@@ -13,7 +13,7 @@
       <nav class="category-navbar">
         <div class="nav-container">
           <div class="nav-left">
-            <button class="back-button" @click="$emit('close')">
+            <button class="back-button" @click="router.push({ name: 'Home' })">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
               </svg>
@@ -243,18 +243,11 @@
       </main>
     </div>
   </div>
-
-  <ProductDetails
-    v-if="selectedProduct"
-    :product="selectedProduct"
-    :visible="showProductDetails"
-    @close="closeProductDetails"
-  />
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import ProductDetails from './ProductDetails.vue'
+import { useRouter } from 'vue-router'
 
 interface Product {
   id: number
@@ -274,10 +267,9 @@ interface Product {
   mrp?: string
 }
 
+const router = useRouter()
 const mobileFiltersOpen = ref(false)
 const sortBy = ref('recommended')
-const showProductDetails = ref(false)
-const selectedProduct = ref<Product | null>(null)
 
 const openFilters = ref({
   range: true,
@@ -289,15 +281,7 @@ const openFilters = ref({
 })
 
 const openProductDetails = (product: Product) => {
-  selectedProduct.value = product
-  showProductDetails.value = true
-  document.body.style.overflow = 'hidden'
-}
-
-const closeProductDetails = () => {
-  showProductDetails.value = false
-  selectedProduct.value = null
-  document.body.style.overflow = 'auto'
+  router.push({ name: 'ProductDetails', params: { id: product.id } })
 }
 
 const productRanges = ['Galaxy S', 'Galaxy A', 'Galaxy M', 'Galaxy F']

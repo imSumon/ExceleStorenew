@@ -1,8 +1,6 @@
 <template>
-  <div v-if="visible" class="product-details-overlay" @click.self="$emit('close')">
+  <div class="product-details-page">
     <div class="product-details-container">
-      <button class="close-btn" @click="$emit('close')">&times;</button>
-
       <div class="details-content">
         <div class="details-left">
           <div class="sticky-top-bar">
@@ -78,8 +76,8 @@
               <div class="price-row">
                 <span class="label">Price (Pcs) :</span>
                 <div class="prices">
-                  <span class="old-price">Tk.{{ product.originalPrice }}</span>
-                  <span class="current-price">Tk.{{ product.price }}</span>
+                  <span class="old-price">Tk.{{ product.mrp }}</span>
+                  <span class="current-price">Tk.{{ product.priceAmount }}</span>
                 </div>
               </div>
             </div>
@@ -89,7 +87,7 @@
                 <label>Storage:</label>
                 <div class="storage-buttons">
                   <button
-                    v-for="storage in storageOptions"
+                    v-for="storage in product.storage"
                     :key="storage"
                     :class="{ active: selectedStorage === storage }"
                     @click="selectedStorage = storage"
@@ -169,7 +167,7 @@
                   <strong>{{ emiAmount }}/month</strong>
                 </div>
                 <div class="emi-text">
-                  0% EMI Price: Tk. {{ product.price }}<br>
+                  0% EMI Price: Tk. {{ product.priceAmount }}<br>
                   Up to 6 Months***
                 </div>
               </div>
@@ -208,79 +206,69 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
-interface Product {
-  name: string;
-  price: string;
-  originalPrice?: string;
-  image: string;
-  colors: string[];
-  storage?: string[];
-  cashback?: string;
-}
+const product = ref({
+  id: 1,
+  name: 'Galaxy A07 (4 GB Memory)',
+  price: '$199',
+  image: '/images/products/3.png',
+  badge: 'New',
+  colors: ['#1A3A4A', '#2A2A2A', '#C8B8D8'],
+  storage: ['64 GB'],
+  colorLabel: 'Light Violet',
+  priceAmount: '9749.00',
+  savingsAmount: '750.00',
+  mrp: '10499.00',
+  cashback: '7000',
+  range: 'Galaxy A',
+  storageCapacity: ['64GB'],
+  displaySize: '6.3-6.5"',
+  features: ['Fast Charging']
+})
 
-const props = defineProps<{
-  product: Product;
-  visible: boolean;
-}>();
-
-defineEmits<{
-  close: [];
-}>();
-
-const selectedImage = ref(props.product.image);
+const selectedImage = ref(product.value.image)
 const productImages = computed(() => [
-  props.product.image,
-  props.product.image,
-  props.product.image
-]);
+  product.value.image,
+  product.value.image,
+  product.value.image
+])
 
-const activeTab = ref('Features');
-const tabs = ['Features', 'Specifications', 'Video'];
+const activeTab = ref('Features')
+const tabs = ['Features', 'Specifications', 'Video']
 
-const storageOptions = ref(['256GB', '512GB', '1TB']);
-const selectedStorage = ref('256GB');
-
-const ramOptions = ref(['12GB', '16GB']);
-const selectedRam = ref('12GB');
-
-const selectedColor = ref(props.product.colors[0]);
-const quantity = ref(1);
-
-const paymentType = ref('discount');
+const selectedStorage = ref(product.value.storage[0])
+const ramOptions = ref(['4GB', '6GB', '8GB'])
+const selectedRam = ref('4GB')
+const selectedColor = ref(product.value.colors[0])
+const quantity = ref(1)
+const paymentType = ref('discount')
 
 const discountPrice = computed(() => {
-  const price = parseInt(props.product.price.replace(/,/g, ''));
-  return (price - 7000).toLocaleString();
-});
+  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
+  return (price - 7000).toLocaleString()
+})
 
 const emiAmount = computed(() => {
-  const price = parseInt(props.product.price.replace(/,/g, ''));
-  return Math.floor(price / 6).toLocaleString();
-});
+  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
+  return Math.floor(price / 6).toLocaleString()
+})
 
 const increaseQuantity = () => {
-  quantity.value++;
-};
+  quantity.value++
+}
 
 const decreaseQuantity = () => {
   if (quantity.value > 1) {
-    quantity.value--;
+    quantity.value--
   }
-};
+}
 </script>
 
 <style scoped>
-.product-details-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  z-index: 10000;
-  overflow-y: auto;
+.product-details-page {
+  min-height: 100vh;
+  background: #fff;
   padding: 20px;
 }
 
@@ -288,40 +276,13 @@ const decreaseQuantity = () => {
   max-width: 1440px;
   margin: 0 auto;
   background: #fff;
-  border-radius: 8px;
-  position: relative;
-}
-
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background: #000;
-  color: #fff;
-  font-size: 28px;
-  cursor: pointer;
-  z-index: 10001;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  transition: all 0.2s;
-}
-
-.close-btn:hover {
-  background: #333;
-  transform: scale(1.1);
 }
 
 .details-content {
   display: grid;
   grid-template-columns: 1fr 480px;
   gap: 40px;
-  padding: 80px 40px 40px;
+  padding: 40px 0;
 }
 
 .details-left {
@@ -806,8 +767,8 @@ const decreaseQuantity = () => {
 }
 
 @media (max-width: 768px) {
-  .details-content {
-    padding: 60px 20px 20px;
+  .product-details-page {
+    padding: 10px;
   }
 
   .sticky-top-bar {
