@@ -92,7 +92,7 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(50, 50, 50, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   color: #fff;
@@ -101,7 +101,7 @@ onUnmounted(() => {
 }
 
 .main-header.scrolled {
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(40, 40, 40, 0.98);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
