@@ -203,12 +203,12 @@
             </div>
           </div>
 
-          <div v-for="product in filteredProducts.slice(0, 2)" :key="product.id" class="product-card">
+          <div v-for="product in filteredProducts.slice(0, 2)" :key="product.id" class="product-card" @click="openProductDetails(product)" style="cursor: pointer;">
             <div class="product-badge-new" v-if="product.badge === 'New'">New</div>
             <div class="product-card-image">
               <img :src="product.image" :alt="product.name" />
             </div>
-            <button class="quick-look-btn">Quick Look</button>
+            <button class="quick-look-btn" @click.stop="openProductDetails(product)">Quick Look</button>
             <h3 class="product-card-title">{{ product.name }}</h3>
             <p class="product-color-label">Colour : {{ product.colorLabel || 'Light Violet' }}</p>
             <div class="product-colors">
@@ -243,10 +243,18 @@
       </main>
     </div>
   </div>
+
+  <ProductDetails
+    v-if="selectedProduct"
+    :product="selectedProduct"
+    :visible="showProductDetails"
+    @close="closeProductDetails"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import ProductDetails from './ProductDetails.vue'
 
 interface Product {
   id: number
@@ -268,6 +276,8 @@ interface Product {
 
 const mobileFiltersOpen = ref(false)
 const sortBy = ref('recommended')
+const showProductDetails = ref(false)
+const selectedProduct = ref<Product | null>(null)
 
 const openFilters = ref({
   range: true,
@@ -277,6 +287,18 @@ const openFilters = ref({
   camera: false,
   series: false
 })
+
+const openProductDetails = (product: Product) => {
+  selectedProduct.value = product
+  showProductDetails.value = true
+  document.body.style.overflow = 'hidden'
+}
+
+const closeProductDetails = () => {
+  showProductDetails.value = false
+  selectedProduct.value = null
+  document.body.style.overflow = 'auto'
+}
 
 const productRanges = ['Galaxy S', 'Galaxy A', 'Galaxy M', 'Galaxy F']
 const storageOptions = ['32GB', '64GB', '128GB', '256GB', '512GB']
