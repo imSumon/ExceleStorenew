@@ -398,13 +398,15 @@ const emiMonthly = computed(() => {
   padding: 12px;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .thumbnail-list img:hover {
-  border-color: #000;
-  transform: scale(1.1) translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border-color: #0066ff;
+  transform: scale(1.2) rotate(5deg) translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 102, 255, 0.3);
+  z-index: 10;
+  position: relative;
 }
 
 .thumbnail-list img.active {
@@ -576,13 +578,31 @@ const emiMonthly = computed(() => {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.storage-buttons button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transition: left 0.5s ease;
 }
 
 .storage-buttons button:hover {
   border-color: #000;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(8px);
+  box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+}
+
+.storage-buttons button:hover::before {
+  left: 100%;
 }
 
 .storage-buttons button.active {
@@ -603,7 +623,14 @@ const emiMonthly = computed(() => {
   border-radius: 50%;
   border: 2px solid #ddd;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.color-buttons button:hover {
+  transform: translateX(6px) scale(1.15);
+  box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.2);
+  border-color: #000;
 }
 
 .color-buttons button.active {
