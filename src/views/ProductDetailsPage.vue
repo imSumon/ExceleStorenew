@@ -196,7 +196,37 @@
             </div>
 
             <div class="credit-card-emi">
-              <button class="accordion-btn">Credit Card EMI +</button>
+              <button class="accordion-btn" @click="emiAccordionOpen = !emiAccordionOpen">
+                Credit Card EMI {{ emiAccordionOpen ? '-' : '+' }}
+              </button>
+              <div v-if="emiAccordionOpen" class="accordion-content">
+                <div class="bank-selection">
+                  <label>Select Bank</label>
+                  <select v-model="selectedBank" class="bank-dropdown">
+                    <option value="">Select your bank</option>
+                    <option value="brac">BRAC Bank</option>
+                    <option value="dbbl">Dutch-Bangla Bank</option>
+                    <option value="city">City Bank</option>
+                    <option value="eastern">Eastern Bank</option>
+                    <option value="scb">Standard Chartered</option>
+                  </select>
+                </div>
+                <div class="tenure-selection">
+                  <label>Tenure:</label>
+                  <select v-model="selectedTenure" class="tenure-dropdown">
+                    <option value="">Select Tenure</option>
+                    <option value="3">3 Months</option>
+                    <option value="6">6 Months</option>
+                    <option value="12">12 Months</option>
+                    <option value="18">18 Months</option>
+                    <option value="24">24 Months</option>
+                  </select>
+                </div>
+                <div v-if="selectedBank && selectedTenure" class="emi-calculation">
+                  <div class="emi-total">Total: ৳ {{ emiTotal }}</div>
+                  <div class="emi-monthly">Monthly: ৳ {{ emiMonthly }} ({{ selectedTenure }} Month{{ parseInt(selectedTenure) > 1 ? 's' : '' }})</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -243,6 +273,9 @@ const selectedRam = ref('4GB')
 const selectedColor = ref(product.value.colors[0])
 const quantity = ref(1)
 const paymentType = ref('discount')
+const emiAccordionOpen = ref(false)
+const selectedBank = ref('')
+const selectedTenure = ref('')
 
 const discountPrice = computed(() => {
   const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
@@ -263,6 +296,17 @@ const decreaseQuantity = () => {
     quantity.value--
   }
 }
+
+const emiTotal = computed(() => {
+  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
+  return price.toLocaleString()
+})
+
+const emiMonthly = computed(() => {
+  if (!selectedTenure.value) return '0.00'
+  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
+  return Math.ceil(price / parseInt(selectedTenure.value)).toLocaleString()
+})
 </script>
 
 <style scoped>
@@ -354,12 +398,18 @@ const decreaseQuantity = () => {
   padding: 12px;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.thumbnail-list img:hover,
+.thumbnail-list img:hover {
+  border-color: #000;
+  transform: scale(1.1) translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
 .thumbnail-list img.active {
   border-color: #000;
+  transform: scale(1.05);
 }
 
 .details-tabs {
@@ -526,17 +576,20 @@ const decreaseQuantity = () => {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
 }
 
 .storage-buttons button:hover {
   border-color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .storage-buttons button.active {
   background: #000;
   color: #fff;
   border-color: #000;
+  transform: scale(1.05);
 }
 
 .color-buttons {
@@ -739,9 +792,10 @@ const decreaseQuantity = () => {
 }
 
 .credit-card-emi {
-  background: #e0e0e0;
+  background: #f5f5f5;
   border-radius: 8px;
   overflow: hidden;
+  border: 1px solid #e0e0e0;
 }
 
 .accordion-btn {
@@ -753,6 +807,90 @@ const decreaseQuantity = () => {
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accordion-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.accordion-content {
+  padding: 20px;
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bank-selection,
+.tenure-selection {
+  margin-bottom: 16px;
+}
+
+.bank-selection label,
+.tenure-selection label {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.bank-dropdown,
+.tenure-dropdown {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.bank-dropdown:hover,
+.tenure-dropdown:hover {
+  border-color: #000;
+}
+
+.bank-dropdown:focus,
+.tenure-dropdown:focus {
+  outline: none;
+  border-color: #0066ff;
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.emi-calculation {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f8f8f8;
+  border-radius: 8px;
+  border-left: 4px solid #0066ff;
+}
+
+.emi-total {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.emi-monthly {
+  font-size: 14px;
+  color: #666;
 }
 
 @media (max-width: 1024px) {
