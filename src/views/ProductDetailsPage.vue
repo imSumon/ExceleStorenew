@@ -246,16 +246,24 @@
             </div>
 
             <div class="delivery-banners-right-section">
-              <div class="delivery-banners-container" ref="deliveryBannersContainer">
-                <div class="delivery-banner-item">
-                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+              <div class="banners-carousel">
+                <button class="banner-nav-btn prev" @click="prevBanner" :disabled="currentBannerIndex === 0">
+                  ❮
+                </button>
+                <div class="banner-display">
+                  <img :src="deliveryBanners[currentBannerIndex]" :alt="`Banner ${currentBannerIndex + 1}`">
                 </div>
-                <div class="delivery-banner-item">
-                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-                </div>
-                <div class="delivery-banner-item">
-                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-                </div>
+                <button class="banner-nav-btn next" @click="nextBanner" :disabled="currentBannerIndex === deliveryBanners.length - 1">
+                  ❯
+                </button>
+              </div>
+              <div class="banner-indicators">
+                <span
+                  v-for="(_banner, index) in deliveryBanners"
+                  :key="index"
+                  :class="{ active: index === currentBannerIndex }"
+                  @click="currentBannerIndex = index"
+                ></span>
               </div>
             </div>
           </div>
@@ -315,11 +323,19 @@ const selectedTenure = ref('')
 const thumbnailContainer = ref<HTMLElement | null>(null)
 const storageContainer = ref<HTMLElement | null>(null)
 const ramContainer = ref<HTMLElement | null>(null)
-const deliveryBannersContainer = ref<HTMLElement | null>(null)
+
+const deliveryBanners = ref([
+  '/images/banners/Banner-1.jpg',
+  '/images/banners/Banner-2.jpg',
+  '/images/banners/Banner-3.jpg',
+  '/images/banners/Banner-4.jpg',
+  '/images/banners/landry-1.png',
+  '/images/banners/landry-2.jpg'
+])
+const currentBannerIndex = ref(0)
 
 let storageScrollInterval: number | null = null
 let ramScrollInterval: number | null = null
-let deliveryBannersScrollInterval: number | null = null
 
 const startAutoScroll = (container: HTMLElement | null, direction: 'left' | 'right') => {
   if (!container) return null
@@ -334,6 +350,18 @@ const startAutoScroll = (container: HTMLElement | null, direction: 'left' | 'rig
   }, 30) as unknown as number
 }
 
+const nextBanner = () => {
+  if (currentBannerIndex.value < deliveryBanners.value.length - 1) {
+    currentBannerIndex.value++
+  }
+}
+
+const prevBanner = () => {
+  if (currentBannerIndex.value > 0) {
+    currentBannerIndex.value--
+  }
+}
+
 onMounted(() => {
   if (storageContainer.value) {
     storageScrollInterval = startAutoScroll(storageContainer.value, 'right')
@@ -341,15 +369,11 @@ onMounted(() => {
   if (ramContainer.value) {
     ramScrollInterval = startAutoScroll(ramContainer.value, 'right')
   }
-  if (deliveryBannersContainer.value) {
-    deliveryBannersScrollInterval = startAutoScroll(deliveryBannersContainer.value, 'right')
-  }
 })
 
 onUnmounted(() => {
   if (storageScrollInterval) clearInterval(storageScrollInterval)
   if (ramScrollInterval) clearInterval(ramScrollInterval)
-  if (deliveryBannersScrollInterval) clearInterval(deliveryBannersScrollInterval)
 })
 
 
@@ -622,33 +646,82 @@ const handleAddToCart = () => {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.delivery-banners-container {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  justify-content: center;
-  align-items: center;
-}
-
-.delivery-banners-container::-webkit-scrollbar {
-  display: none;
-}
-
-.delivery-banner-item {
-  flex: 0 0 auto;
+.banners-carousel {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 12px;
+  justify-content: space-between;
 }
 
-.delivery-banner-item img {
-  width: 200px;
-  height: auto;
-  display: block;
+.banner-display {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
   border-radius: 8px;
+}
+
+.banner-display img {
+  width: 100%;
+  max-width: 350px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.banner-nav-btn {
+  background: #0066cc;
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.banner-nav-btn:hover:not(:disabled) {
+  background: #0052a3;
+  transform: scale(1.1);
+}
+
+.banner-nav-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.banner-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.banner-indicators span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.banner-indicators span.active {
+  background: #0066cc;
+  width: 24px;
+  border-radius: 4px;
+}
+
+.banner-indicators span:hover {
+  background: #0052a3;
 }
 
 .sidebar-title {
