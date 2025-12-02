@@ -12,13 +12,20 @@
             <div class="main-image">
               <img :src="selectedImage" :alt="product.name">
             </div>
-            <div class="thumbnail-list">
+            <div
+              class="thumbnail-list"
+              ref="thumbnailContainer"
+              @mousedown="startDragSection1"
+              @mousemove="dragSection1"
+              @mouseup="endDragSection1"
+              @mouseleave="endDragSection1"
+            >
               <img
                 v-for="(img, idx) in productImages"
                 :key="idx"
                 :src="img"
                 :class="{ active: selectedImage === img }"
-                @click="selectedImage = img"
+                @click="handleImageClick(img)"
                 :alt="`${product.name} view ${idx + 1}`"
               >
             </div>
@@ -85,7 +92,14 @@
             <div class="options-section">
               <div class="option-group">
                 <label>Storage:</label>
-                <div class="storage-buttons">
+                <div
+                  class="storage-buttons"
+                  ref="storageContainer"
+                  @mousedown="startDragSection2"
+                  @mousemove="dragSection2"
+                  @mouseup="endDragSection2"
+                  @mouseleave="endDragSection2"
+                >
                   <button
                     v-for="storage in product.storage"
                     :key="storage"
@@ -99,7 +113,14 @@
 
               <div class="option-group">
                 <label>RAM:</label>
-                <div class="storage-buttons">
+                <div
+                  class="storage-buttons"
+                  ref="ramContainer"
+                  @mousedown="startDragSection2"
+                  @mousemove="dragSection2"
+                  @mouseup="endDragSection2"
+                  @mouseleave="endDragSection2"
+                >
                   <button
                     v-for="ram in ramOptions"
                     :key="ram"
@@ -277,6 +298,18 @@ const emiAccordionOpen = ref(false)
 const selectedBank = ref('')
 const selectedTenure = ref('')
 
+const thumbnailContainer = ref<HTMLElement | null>(null)
+const storageContainer = ref<HTMLElement | null>(null)
+const ramContainer = ref<HTMLElement | null>(null)
+
+const isDraggingSection1 = ref(false)
+const isDraggingSection2 = ref(false)
+const startXSection1 = ref(0)
+const startXSection2 = ref(0)
+const scrollLeftSection1 = ref(0)
+const scrollLeftSection2 = ref(0)
+const clickedImage = ref<string | null>(null)
+
 const discountPrice = computed(() => {
   const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
   return (price - 7000).toLocaleString()
@@ -307,6 +340,61 @@ const emiMonthly = computed(() => {
   const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
   return Math.ceil(price / parseInt(selectedTenure.value)).toLocaleString()
 })
+
+const startDragSection1 = (e: MouseEvent) => {
+  if (!thumbnailContainer.value) return
+  isDraggingSection1.value = true
+  clickedImage.value = null
+  startXSection1.value = e.pageX - thumbnailContainer.value.offsetLeft
+  scrollLeftSection1.value = thumbnailContainer.value.scrollLeft
+  thumbnailContainer.value.style.cursor = 'grabbing'
+}
+
+const dragSection1 = (e: MouseEvent) => {
+  if (!isDraggingSection1.value || !thumbnailContainer.value) return
+  e.preventDefault()
+  const x = e.pageX - thumbnailContainer.value.offsetLeft
+  const walk = (x - startXSection1.value) * 2
+  thumbnailContainer.value.scrollLeft = scrollLeftSection1.value - walk
+}
+
+const endDragSection1 = () => {
+  if (!thumbnailContainer.value) return
+  isDraggingSection1.value = false
+  thumbnailContainer.value.style.cursor = 'grab'
+}
+
+const handleImageClick = (img: string) => {
+  if (!isDraggingSection1.value) {
+    selectedImage.value = img
+  }
+}
+
+const startDragSection2 = (e: MouseEvent) => {
+  const target = e.currentTarget as HTMLElement
+  if (!target) return
+  isDraggingSection2.value = true
+  startXSection2.value = e.pageX - target.offsetLeft
+  scrollLeftSection2.value = target.scrollLeft
+  target.style.cursor = 'grabbing'
+}
+
+const dragSection2 = (e: MouseEvent) => {
+  if (!isDraggingSection2.value) return
+  e.preventDefault()
+  const target = e.currentTarget as HTMLElement
+  if (!target) return
+  const x = e.pageX - target.offsetLeft
+  const walk = (x - startXSection2.value) * 1.5
+  target.scrollLeft = scrollLeftSection2.value - walk
+}
+
+const endDragSection2 = (e: MouseEvent) => {
+  const target = e.currentTarget as HTMLElement
+  if (!target) return
+  isDraggingSection2.value = false
+  target.style.cursor = 'grab'
+}
 </script>
 
 <style scoped>
@@ -386,7 +474,35 @@ const emiMonthly = computed(() => {
 .thumbnail-list {
   display: flex;
   gap: 12px;
-  justify-content: center;
+  justify-content: flex-start;
+  overflow-x: auto;
+  cursor: grab;
+  user-select: none;
+  padding: 12px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd #f5f5f5;
+}
+
+.thumbnail-list::-webkit-scrollbar {
+  height: 8px;
+}
+
+.thumbnail-list::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.thumbnail-list::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 4px;
+}
+
+.thumbnail-list::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
+
+.thumbnail-list:active {
+  cursor: grabbing;
 }
 
 .thumbnail-list img {
@@ -399,6 +515,8 @@ const emiMonthly = computed(() => {
   cursor: pointer;
   border: 2px solid transparent;
   transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  flex-shrink: 0;
+  pointer-events: auto;
 }
 
 .thumbnail-list img:hover {
@@ -567,7 +685,35 @@ const emiMonthly = computed(() => {
 .storage-buttons {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  cursor: grab;
+  user-select: none;
+  padding: 8px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd #f5f5f5;
+}
+
+.storage-buttons::-webkit-scrollbar {
+  height: 6px;
+}
+
+.storage-buttons::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 3px;
+}
+
+.storage-buttons::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 3px;
+}
+
+.storage-buttons::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
+
+.storage-buttons:active {
+  cursor: grabbing;
 }
 
 .storage-buttons button {
@@ -581,6 +727,9 @@ const emiMonthly = computed(() => {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
+  white-space: nowrap;
+  pointer-events: auto;
 }
 
 .storage-buttons button::before {
