@@ -1,5 +1,19 @@
 <template>
   <div class="product-details-page">
+    <div class="delivery-banners-top-section">
+      <div class="delivery-banners-container" ref="deliveryBannersContainer">
+        <div class="delivery-banner-item">
+          <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+        </div>
+        <div class="delivery-banner-item">
+          <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+        </div>
+        <div class="delivery-banner-item">
+          <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+        </div>
+      </div>
+    </div>
+
     <div class="product-details-container">
       <div class="details-content">
         <div class="details-left">
@@ -72,20 +86,6 @@
             ref="sidebarContainer"
           >
             <h2 class="sidebar-title">{{ product.name }}</h2>
-
-            <div class="delivery-banners-section">
-              <div class="delivery-banners-container" ref="deliveryBannersContainer">
-                <div class="delivery-banner-item">
-                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-                </div>
-                <div class="delivery-banner-item">
-                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-                </div>
-                <div class="delivery-banner-item">
-                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-                </div>
-              </div>
-            </div>
 
             <div class="pricing-section">
               <div class="price-row">
@@ -613,20 +613,24 @@ const handleAddToCart = () => {
   gap: 24px;
 }
 
-.delivery-banners-section {
+.delivery-banners-top-section {
   background: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 0 auto 32px;
+  max-width: 1400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .delivery-banners-container {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  justify-content: center;
+  align-items: center;
 }
 
 .delivery-banners-container::-webkit-scrollbar {
@@ -641,10 +645,10 @@ const handleAddToCart = () => {
 }
 
 .delivery-banner-item img {
-  width: 180px;
+  width: 200px;
   height: auto;
   display: block;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
 .sidebar-title {
