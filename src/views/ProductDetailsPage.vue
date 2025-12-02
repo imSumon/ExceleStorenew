@@ -281,8 +281,13 @@
             <button class="add-to-cart-btn">ADD TO CART</button>
 
             <div class="seller-info">
-              <div>Sold By <strong>excel</strong></div>
-              <div class="contact">+8809610990120</div>
+              <div class="seller-details">
+                <img src="/images/icons/image copy copy.png" alt="Excel Telecom" class="seller-logo">
+                <div class="seller-text">
+                  <div>Sold By <strong>excel</strong></div>
+                  <div class="contact">+8809610990120</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -941,14 +946,30 @@ watch(paymentType, (newValue) => {
 }
 
 .seller-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 16px;
   background: #fff;
   border-radius: 8px;
   font-size: 14px;
   margin-bottom: 20px;
+}
+
+.seller-details {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.seller-logo {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+}
+
+.seller-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
 }
 
 .contact {
