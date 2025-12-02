@@ -65,19 +65,6 @@
             </div>
           </div>
 
-          <div class="delivery-banners-left-section">
-            <div class="delivery-banners-container" ref="deliveryBannersContainer">
-              <div class="delivery-banner-item">
-                <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-              </div>
-              <div class="delivery-banner-item">
-                <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-              </div>
-              <div class="delivery-banner-item">
-                <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="details-right">
@@ -254,6 +241,20 @@
                 <div class="seller-text">
                   <div>Sold By <strong>excel</strong></div>
                   <div class="contact">+8809610990120</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="delivery-banners-right-section">
+              <div class="delivery-banners-container" ref="deliveryBannersContainer">
+                <div class="delivery-banner-item">
+                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+                </div>
+                <div class="delivery-banner-item">
+                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+                </div>
+                <div class="delivery-banner-item">
+                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
                 </div>
               </div>
             </div>
@@ -613,11 +614,11 @@ const handleAddToCart = () => {
   gap: 24px;
 }
 
-.delivery-banners-left-section {
+.delivery-banners-right-section {
   background: #fff;
   border-radius: 12px;
   padding: 20px;
-  margin-top: 32px;
+  margin-top: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
