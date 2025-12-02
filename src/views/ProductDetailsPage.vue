@@ -182,15 +182,14 @@
                   0% EMI Price: Tk. {{ product.priceAmount }}<br>
                   Up to 6 Months***
                 </div>
-                <div class="emi-alert">
-                  ⚡ NEW FEATURE ADDED - See EMI Calculator Below ⚡
-                </div>
               </div>
             </div>
 
             <div v-if="paymentType === 'emi'" class="credit-card-emi">
               <button class="emi-calculator-btn" @click="emiAccordionOpen = !emiAccordionOpen">
-                {{ emiAccordionOpen ? '✕ Close' : '🏦 EMI Calculator - Click Here' }}
+                <span class="btn-icon">🏦</span>
+                <span class="btn-text">{{ emiAccordionOpen ? 'Close EMI Calculator' : 'Calculate Your Bank EMI' }}</span>
+                <span class="btn-arrow">{{ emiAccordionOpen ? '▲' : '▼' }}</span>
               </button>
               <div v-if="emiAccordionOpen" class="accordion-content">
                 <div class="bank-selection">
@@ -975,46 +974,36 @@ watch(paymentType, (newValue) => {
   width: 100%;
 }
 
-.emi-alert {
-  background: linear-gradient(135deg, #ff6600 0%, #ff8800 100%);
-  color: #fff;
-  padding: 12px;
-  border-radius: 6px;
-  font-weight: 700;
-  text-align: center;
-  margin-top: 12px;
-  animation: pulse 2s infinite;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
-  }
-  50% {
-    transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(255, 102, 0, 0.5);
-  }
-}
-
 .emi-calculator-btn {
   width: 100%;
-  padding: 20px;
+  padding: 18px 24px;
   background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
   border: none;
   border-radius: 8px;
-  text-align: center;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   color: #fff;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  margin-top: 16px;
+}
+
+.emi-calculator-btn .btn-icon {
+  font-size: 24px;
+}
+
+.emi-calculator-btn .btn-text {
+  flex: 1;
+  text-align: left;
+}
+
+.emi-calculator-btn .btn-arrow {
+  font-size: 18px;
 }
 
 .emi-calculator-btn:hover {
