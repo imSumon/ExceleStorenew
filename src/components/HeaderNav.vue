@@ -36,12 +36,13 @@
               <path d="m21 21-4.35-4.35"></path>
             </svg>
           </button>
-          <button class="icon-btn cart-btn" aria-label="Cart">
+          <button class="icon-btn cart-btn" aria-label="Cart" @click="$router.push('/cart')">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="9" cy="21" r="1"></circle>
               <circle cx="20" cy="21" r="1"></circle>
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
             </svg>
+            <span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span>
           </button>
           <button class="icon-btn menu-btn" @click="toggleMobileMenu" aria-label="Menu">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -58,8 +59,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useCart } from '../store/cartStore'
 
 const emit = defineEmits(['open-category'])
+const { cartCount } = useCart()
 
 const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
@@ -196,10 +199,32 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   transition: opacity 0.2s;
+  position: relative;
 }
 
 .icon-btn:hover {
   opacity: 0.7;
+}
+
+.cart-btn {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ff4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
 }
 
 .menu-btn {

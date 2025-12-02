@@ -237,7 +237,7 @@
               </div>
             </div>
 
-            <button class="add-to-cart-btn">ADD TO CART</button>
+            <button class="add-to-cart-btn" @click="handleAddToCart">ADD TO CART</button>
 
             <div class="seller-info">
               <div class="seller-details">
@@ -257,6 +257,11 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { useCart } from '../store/cartStore'
+
+const router = useRouter()
+const { addToCart } = useCart()
 
 const product = ref({
   id: 1,
@@ -345,6 +350,21 @@ watch(paymentType, (newValue) => {
     emiAccordionOpen.value = false
   }
 })
+
+const handleAddToCart = () => {
+  addToCart({
+    name: product.value.name,
+    image: product.value.image,
+    price: parseFloat(product.value.priceAmount.replace(/[^0-9.]/g, '')),
+    originalPrice: parseFloat(product.value.mrp.replace(/[^0-9.]/g, '')),
+    quantity: quantity.value,
+    storage: selectedStorage.value,
+    ram: selectedRam.value,
+    color: selectedColor.value
+  })
+
+  router.push('/cart')
+}
 </script>
 
 <style scoped>
