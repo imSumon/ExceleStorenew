@@ -15,10 +15,6 @@
             <div
               class="thumbnail-list"
               ref="thumbnailContainer"
-              @mousedown="startDragSection1"
-              @mousemove="dragSection1"
-              @mouseup="endDragSection1"
-              @mouseleave="endDragSection1"
             >
               <img
                 v-for="(img, idx) in productImages"
@@ -74,9 +70,6 @@
           <div
             class="sticky-sidebar"
             ref="sidebarContainer"
-            @mouseenter="enableVerticalScroll"
-            @mouseleave="disableVerticalScroll"
-            @mousemove="handleVerticalScroll"
           >
             <div class="delivery-badge">
               <img src="/images/icons/image.png" alt="Free Delivery">
@@ -101,10 +94,6 @@
                 <div
                   class="storage-buttons"
                   ref="storageContainer"
-                  @mousedown="startDragSection2"
-                  @mousemove="dragSection2"
-                  @mouseup="endDragSection2"
-                  @mouseleave="endDragSection2"
                 >
                   <button
                     v-for="storage in product.storage"
@@ -122,10 +111,6 @@
                 <div
                   class="storage-buttons"
                   ref="ramContainer"
-                  @mousedown="startDragSection2"
-                  @mousemove="dragSection2"
-                  @mouseup="endDragSection2"
-                  @mouseleave="endDragSection2"
                 >
                   <button
                     v-for="ram in ramOptions"
@@ -308,17 +293,6 @@ const thumbnailContainer = ref<HTMLElement | null>(null)
 const storageContainer = ref<HTMLElement | null>(null)
 const ramContainer = ref<HTMLElement | null>(null)
 
-const isDraggingSection1 = ref(false)
-const isDraggingSection2 = ref(false)
-const startXSection1 = ref(0)
-const startXSection2 = ref(0)
-const scrollLeftSection1 = ref(0)
-const scrollLeftSection2 = ref(0)
-const clickedImage = ref<string | null>(null)
-
-const sidebarContainer = ref<HTMLElement | null>(null)
-const verticalScrollEnabled = ref(false)
-const lastMouseY = ref(0)
 
 const discountPrice = computed(() => {
   const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
@@ -351,84 +325,8 @@ const emiMonthly = computed(() => {
   return Math.ceil(price / parseInt(selectedTenure.value)).toLocaleString()
 })
 
-const startDragSection1 = (e: MouseEvent) => {
-  if (!thumbnailContainer.value) return
-  isDraggingSection1.value = true
-  clickedImage.value = null
-  startXSection1.value = e.pageX - thumbnailContainer.value.offsetLeft
-  scrollLeftSection1.value = thumbnailContainer.value.scrollLeft
-  thumbnailContainer.value.style.cursor = 'grabbing'
-}
-
-const dragSection1 = (e: MouseEvent) => {
-  if (!isDraggingSection1.value || !thumbnailContainer.value) return
-  e.preventDefault()
-  const x = e.pageX - thumbnailContainer.value.offsetLeft
-  const walk = (x - startXSection1.value) * 2
-  thumbnailContainer.value.scrollLeft = scrollLeftSection1.value - walk
-}
-
-const endDragSection1 = () => {
-  if (!thumbnailContainer.value) return
-  isDraggingSection1.value = false
-  thumbnailContainer.value.style.cursor = 'grab'
-}
-
 const handleImageClick = (img: string) => {
-  if (!isDraggingSection1.value) {
-    selectedImage.value = img
-  }
-}
-
-const startDragSection2 = (e: MouseEvent) => {
-  const target = e.currentTarget as HTMLElement
-  if (!target) return
-  isDraggingSection2.value = true
-  startXSection2.value = e.pageX - target.offsetLeft
-  scrollLeftSection2.value = target.scrollLeft
-  target.style.cursor = 'grabbing'
-}
-
-const dragSection2 = (e: MouseEvent) => {
-  if (!isDraggingSection2.value) return
-  e.preventDefault()
-  const target = e.currentTarget as HTMLElement
-  if (!target) return
-  const x = e.pageX - target.offsetLeft
-  const walk = (x - startXSection2.value) * 1.5
-  target.scrollLeft = scrollLeftSection2.value - walk
-}
-
-const endDragSection2 = (e: MouseEvent) => {
-  const target = e.currentTarget as HTMLElement
-  if (!target) return
-  isDraggingSection2.value = false
-  target.style.cursor = 'grab'
-}
-
-const enableVerticalScroll = () => {
-  verticalScrollEnabled.value = true
-}
-
-const disableVerticalScroll = () => {
-  verticalScrollEnabled.value = false
-  lastMouseY.value = 0
-}
-
-const handleVerticalScroll = (e: MouseEvent) => {
-  if (!verticalScrollEnabled.value || !sidebarContainer.value) return
-
-  if (lastMouseY.value === 0) {
-    lastMouseY.value = e.clientY
-    return
-  }
-
-  const deltaY = e.clientY - lastMouseY.value
-  const scrollSpeed = 2
-
-  sidebarContainer.value.scrollTop -= deltaY * scrollSpeed
-
-  lastMouseY.value = e.clientY
+  selectedImage.value = img
 }
 </script>
 
@@ -511,8 +409,6 @@ const handleVerticalScroll = (e: MouseEvent) => {
   gap: 12px;
   justify-content: flex-start;
   overflow-x: auto;
-  cursor: grab;
-  user-select: none;
   padding: 12px 0;
   scrollbar-width: thin;
   scrollbar-color: #ddd #f5f5f5;
@@ -536,9 +432,6 @@ const handleVerticalScroll = (e: MouseEvent) => {
   background: #bbb;
 }
 
-.thumbnail-list:active {
-  cursor: grabbing;
-}
 
 .thumbnail-list img {
   width: 100px;
@@ -744,8 +637,6 @@ const handleVerticalScroll = (e: MouseEvent) => {
   gap: 8px;
   flex-wrap: nowrap;
   overflow-x: auto;
-  cursor: grab;
-  user-select: none;
   padding: 8px 0;
   scrollbar-width: thin;
   scrollbar-color: #ddd #f5f5f5;
@@ -769,9 +660,6 @@ const handleVerticalScroll = (e: MouseEvent) => {
   background: #bbb;
 }
 
-.storage-buttons:active {
-  cursor: grabbing;
-}
 
 .storage-buttons button {
   padding: 8px 20px;
@@ -1017,6 +905,7 @@ const handleVerticalScroll = (e: MouseEvent) => {
   background: #fff;
   border-radius: 8px;
   font-size: 14px;
+  margin-bottom: 20px;
 }
 
 .contact {
@@ -1030,6 +919,7 @@ const handleVerticalScroll = (e: MouseEvent) => {
   overflow: hidden;
   border: 2px solid #e0e0e0;
   transition: all 0.3s ease;
+  margin-top: 20px;
 }
 
 .credit-card-emi:hover {
