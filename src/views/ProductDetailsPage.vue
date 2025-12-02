@@ -186,8 +186,8 @@
             </div>
 
             <div v-if="paymentType === 'emi'" class="credit-card-emi">
-              <button class="accordion-btn" @click="emiAccordionOpen = !emiAccordionOpen">
-                Credit Card EMI {{ emiAccordionOpen ? '-' : '+' }}
+              <button class="emi-calculator-btn" @click="emiAccordionOpen = !emiAccordionOpen">
+                {{ emiAccordionOpen ? '✕ Close' : '🏦 EMI Calculator - Click Here' }}
               </button>
               <div v-if="emiAccordionOpen" class="accordion-content">
                 <div class="bank-selection">
@@ -970,6 +970,33 @@ watch(paymentType, (newValue) => {
 
 .accordion-btn:hover::before {
   width: 100%;
+}
+
+.emi-calculator-btn {
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
+  border: none;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.emi-calculator-btn:hover {
+  background: linear-gradient(135deg, #0052cc 0%, #003d99 100%);
+  box-shadow: 0 6px 20px rgba(0, 102, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.emi-calculator-btn:active {
+  transform: translateY(0);
 }
 
 .accordion-content {
