@@ -71,12 +71,11 @@
             class="sticky-sidebar"
             ref="sidebarContainer"
           >
-            <div class="delivery-badge">
-              <img src="/images/icons/image.png" alt="Free Delivery">
-              <span>FREE DELIVERY</span>
-            </div>
-
             <h2 class="sidebar-title">{{ product.name }}</h2>
+
+            <div class="delivery-badge">
+              <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+            </div>
 
             <div class="pricing-section">
               <div class="price-row">
@@ -144,10 +143,6 @@
                   <button @click="increaseQuantity">+</button>
                 </div>
               </div>
-            </div>
-
-            <div class="free-delivery-banner">
-              <img src="/images/banners/image copy copy.png" alt="Free Delivery">
             </div>
 
             <div class="warranty-info">
@@ -603,22 +598,16 @@ const handleAddToCart = () => {
 }
 
 .delivery-badge {
-  display: flex;
-  align-items: center;
-  gap: 12px;
   background: #fff;
-  padding: 16px;
   border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .delivery-badge img {
-  width: 48px;
-  height: 48px;
-}
-
-.delivery-badge span {
-  font-weight: 700;
-  color: #ff6600;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .sidebar-title {
@@ -805,20 +794,6 @@ const handleAddToCart = () => {
   border-radius: 4px;
   font-size: 16px;
   font-weight: 600;
-}
-
-.free-delivery-banner {
-  margin: 16px 0;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.free-delivery-banner img {
-  width: 100%;
-  height: auto;
-  display: block;
 }
 
 .warranty-info {
