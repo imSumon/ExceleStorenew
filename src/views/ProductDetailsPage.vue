@@ -221,6 +221,48 @@
               </div>
             </div>
 
+            <div class="credit-card-emi-static">
+              <div class="emi-header">
+                <span>Credit Card EMI</span>
+                <button class="toggle-btn" @click="creditCardEmiOpen = !creditCardEmiOpen">
+                  {{ creditCardEmiOpen ? '−' : '+' }}
+                </button>
+              </div>
+              <div v-if="creditCardEmiOpen" class="emi-content">
+                <div class="form-group">
+                  <label>Select Bank</label>
+                  <select v-model="staticSelectedBank" class="form-select">
+                    <option value="">Select your bank</option>
+                    <option value="brac">BRAC Bank</option>
+                    <option value="dbbl">Dutch-Bangla Bank</option>
+                    <option value="city">City Bank</option>
+                    <option value="eastern">Eastern Bank</option>
+                    <option value="scb">Standard Chartered</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Tenure:</label>
+                  <select v-model="staticSelectedTenure" class="form-select">
+                    <option value="">Select Tenure</option>
+                    <option value="3">3 Months</option>
+                    <option value="6">6 Months</option>
+                    <option value="9">9 Months</option>
+                    <option value="12">12 Months</option>
+                  </select>
+                </div>
+                <div v-if="staticSelectedBank && staticSelectedTenure" class="emi-result">
+                  <div class="result-row">
+                    <span>Total:</span>
+                    <strong>৳ {{ staticEmiTotal }}</strong>
+                  </div>
+                  <div class="result-row">
+                    <span>Monthly:</span>
+                    <strong>৳ {{ staticEmiMonthly }} ({{ staticSelectedTenure }} Month)</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="care-options">
               <div class="care-label">We Care:</div>
               <div class="care-item">
@@ -290,6 +332,9 @@ const paymentType = ref('discount')
 const emiAccordionOpen = ref(false)
 const selectedBank = ref('')
 const selectedTenure = ref('')
+const creditCardEmiOpen = ref(false)
+const staticSelectedBank = ref('')
+const staticSelectedTenure = ref('')
 
 const thumbnailContainer = ref<HTMLElement | null>(null)
 const storageContainer = ref<HTMLElement | null>(null)
@@ -325,6 +370,17 @@ const emiMonthly = computed(() => {
   if (!selectedTenure.value) return '0.00'
   const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
   return Math.ceil(price / parseInt(selectedTenure.value)).toLocaleString()
+})
+
+const staticEmiTotal = computed(() => {
+  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
+  return price.toLocaleString()
+})
+
+const staticEmiMonthly = computed(() => {
+  if (!staticSelectedTenure.value) return '0.00'
+  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
+  return Math.ceil(price / parseInt(staticSelectedTenure.value)).toLocaleString()
 })
 
 const handleImageClick = (img: string) => {
@@ -1113,6 +1169,113 @@ watch(paymentType, (newValue) => {
   color: #333;
   font-weight: 600;
   line-height: 1.5;
+}
+
+.credit-card-emi-static {
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.emi-header {
+  background: #5a5a5a;
+  color: #fff;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+.emi-content {
+  padding: 20px;
+  background: #f5f5f5;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.form-select:hover {
+  border-color: #999;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #0066ff;
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.emi-result {
+  margin-top: 20px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.result-row:first-child {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 12px;
+  margin-bottom: 8px;
+}
+
+.result-row span {
+  color: #666;
+}
+
+.result-row strong {
+  color: #000;
+  font-weight: 700;
+  font-size: 15px;
 }
 
 @media (max-width: 1024px) {
