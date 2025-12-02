@@ -146,6 +146,10 @@
               </div>
             </div>
 
+            <div class="free-delivery-banner">
+              <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+            </div>
+
             <div class="warranty-info">
               <strong>Warranty:</strong> 1 Year Official Warranty from Samsung Care
             </div>
@@ -256,7 +260,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCart } from '../store/cartStore'
 
@@ -305,6 +309,36 @@ const selectedTenure = ref('')
 const thumbnailContainer = ref<HTMLElement | null>(null)
 const storageContainer = ref<HTMLElement | null>(null)
 const ramContainer = ref<HTMLElement | null>(null)
+
+let storageScrollInterval: number | null = null
+let ramScrollInterval: number | null = null
+
+const startAutoScroll = (container: HTMLElement | null, direction: 'left' | 'right') => {
+  if (!container) return null
+
+  return setInterval(() => {
+    if (direction === 'right') {
+      container.scrollLeft += 1
+      if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
+        container.scrollLeft = 0
+      }
+    }
+  }, 30) as unknown as number
+}
+
+onMounted(() => {
+  if (storageContainer.value) {
+    storageScrollInterval = startAutoScroll(storageContainer.value, 'right')
+  }
+  if (ramContainer.value) {
+    ramScrollInterval = startAutoScroll(ramContainer.value, 'right')
+  }
+})
+
+onUnmounted(() => {
+  if (storageScrollInterval) clearInterval(storageScrollInterval)
+  if (ramScrollInterval) clearInterval(ramScrollInterval)
+})
 
 
 const discountPrice = computed(() => {
@@ -771,6 +805,20 @@ const handleAddToCart = () => {
   border-radius: 4px;
   font-size: 16px;
   font-weight: 600;
+}
+
+.free-delivery-banner {
+  margin: 16px 0;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.free-delivery-banner img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .warranty-info {
