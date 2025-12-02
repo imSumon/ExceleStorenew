@@ -71,7 +71,13 @@
         </div>
 
         <div class="details-right">
-          <div class="sticky-sidebar">
+          <div
+            class="sticky-sidebar"
+            ref="sidebarContainer"
+            @mouseenter="enableVerticalScroll"
+            @mouseleave="disableVerticalScroll"
+            @mousemove="handleVerticalScroll"
+          >
             <div class="delivery-badge">
               <img src="/images/icons/image.png" alt="Free Delivery">
               <span>FREE DELIVERY</span>
@@ -310,6 +316,10 @@ const scrollLeftSection1 = ref(0)
 const scrollLeftSection2 = ref(0)
 const clickedImage = ref<string | null>(null)
 
+const sidebarContainer = ref<HTMLElement | null>(null)
+const verticalScrollEnabled = ref(false)
+const lastMouseY = ref(0)
+
 const discountPrice = computed(() => {
   const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
   return (price - 7000).toLocaleString()
@@ -394,6 +404,31 @@ const endDragSection2 = (e: MouseEvent) => {
   if (!target) return
   isDraggingSection2.value = false
   target.style.cursor = 'grab'
+}
+
+const enableVerticalScroll = () => {
+  verticalScrollEnabled.value = true
+}
+
+const disableVerticalScroll = () => {
+  verticalScrollEnabled.value = false
+  lastMouseY.value = 0
+}
+
+const handleVerticalScroll = (e: MouseEvent) => {
+  if (!verticalScrollEnabled.value || !sidebarContainer.value) return
+
+  if (lastMouseY.value === 0) {
+    lastMouseY.value = e.clientY
+    return
+  }
+
+  const deltaY = e.clientY - lastMouseY.value
+  const scrollSpeed = 2
+
+  sidebarContainer.value.scrollTop -= deltaY * scrollSpeed
+
+  lastMouseY.value = e.clientY
 }
 </script>
 
@@ -602,6 +637,28 @@ const endDragSection2 = (e: MouseEvent) => {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #bbb #f0f0f0;
+}
+
+.sticky-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 4px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }
 
 .delivery-badge {
