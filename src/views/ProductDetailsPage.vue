@@ -596,7 +596,7 @@ watch(paymentType, (newValue) => {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-height: calc(100vh - 40px);
+  max-height: calc(100vh + 200px);
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #bbb #f0f0f0;
