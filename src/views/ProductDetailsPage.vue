@@ -182,6 +182,9 @@
                   0% EMI Price: Tk. {{ product.priceAmount }}<br>
                   Up to 6 Months***
                 </div>
+                <div class="emi-alert">
+                  ⚡ NEW FEATURE ADDED - See EMI Calculator Below ⚡
+                </div>
               </div>
             </div>
 
@@ -970,6 +973,31 @@ watch(paymentType, (newValue) => {
 
 .accordion-btn:hover::before {
   width: 100%;
+}
+
+.emi-alert {
+  background: linear-gradient(135deg, #ff6600 0%, #ff8800 100%);
+  color: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 12px;
+  animation: pulse 2s infinite;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(255, 102, 0, 0.5);
+  }
 }
 
 .emi-calculator-btn {
