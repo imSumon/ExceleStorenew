@@ -185,29 +185,7 @@
               </div>
             </div>
 
-            <div class="care-options">
-              <div class="care-label">We Care:</div>
-              <div class="care-item">
-                <input type="checkbox" id="screen-replacement">
-                <label for="screen-replacement">1 Year screen replacement (Free)</label>
-              </div>
-              <div class="care-item">
-                <input type="checkbox" id="full-coverage">
-                <label for="full-coverage">1 Year Full Coverage (TK. 5000)</label>
-              </div>
-              <div class="care-note">
-                Full Mobile protection Coverage including theft/loss.
-              </div>
-            </div>
-
-            <button class="add-to-cart-btn">ADD TO CART</button>
-
-            <div class="seller-info">
-              <div>Sold By <strong>excel</strong></div>
-              <div class="contact">+8809610990120</div>
-            </div>
-
-            <div class="credit-card-emi">
+            <div v-if="paymentType === 'emi'" class="credit-card-emi">
               <button class="accordion-btn" @click="emiAccordionOpen = !emiAccordionOpen">
                 Credit Card EMI {{ emiAccordionOpen ? '-' : '+' }}
               </button>
@@ -239,6 +217,28 @@
                   <div class="emi-monthly">Monthly: ৳ {{ emiMonthly }} ({{ selectedTenure }} Month{{ parseInt(selectedTenure) > 1 ? 's' : '' }})</div>
                 </div>
               </div>
+            </div>
+
+            <div class="care-options">
+              <div class="care-label">We Care:</div>
+              <div class="care-item">
+                <input type="checkbox" id="screen-replacement">
+                <label for="screen-replacement">1 Year screen replacement (Free)</label>
+              </div>
+              <div class="care-item">
+                <input type="checkbox" id="full-coverage">
+                <label for="full-coverage">1 Year Full Coverage (TK. 5000)</label>
+              </div>
+              <div class="care-note">
+                Full Mobile protection Coverage including theft/loss.
+              </div>
+            </div>
+
+            <button class="add-to-cart-btn">ADD TO CART</button>
+
+            <div class="seller-info">
+              <div>Sold By <strong>excel</strong></div>
+              <div class="contact">+8809610990120</div>
             </div>
           </div>
         </div>
@@ -332,16 +332,10 @@ const handleImageClick = (img: string) => {
 watch(paymentType, (newValue) => {
   if (newValue === 'emi') {
     emiAccordionOpen.value = true
-    setTimeout(() => {
-      const emiSection = document.querySelector('.credit-card-emi')
-      if (emiSection) {
-        emiSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-      }
-    }, 100)
   } else {
     emiAccordionOpen.value = false
   }
-}, { immediate: true })
+})
 </script>
 
 <style scoped>
