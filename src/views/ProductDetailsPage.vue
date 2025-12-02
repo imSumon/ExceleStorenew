@@ -73,8 +73,18 @@
           >
             <h2 class="sidebar-title">{{ product.name }}</h2>
 
-            <div class="delivery-badge">
-              <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+            <div class="delivery-banners-section">
+              <div class="delivery-banners-container" ref="deliveryBannersContainer">
+                <div class="delivery-banner-item">
+                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+                </div>
+                <div class="delivery-banner-item">
+                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+                </div>
+                <div class="delivery-banner-item">
+                  <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+                </div>
+              </div>
             </div>
 
             <div class="pricing-section">
@@ -304,9 +314,11 @@ const selectedTenure = ref('')
 const thumbnailContainer = ref<HTMLElement | null>(null)
 const storageContainer = ref<HTMLElement | null>(null)
 const ramContainer = ref<HTMLElement | null>(null)
+const deliveryBannersContainer = ref<HTMLElement | null>(null)
 
 let storageScrollInterval: number | null = null
 let ramScrollInterval: number | null = null
+let deliveryBannersScrollInterval: number | null = null
 
 const startAutoScroll = (container: HTMLElement | null, direction: 'left' | 'right') => {
   if (!container) return null
@@ -328,11 +340,15 @@ onMounted(() => {
   if (ramContainer.value) {
     ramScrollInterval = startAutoScroll(ramContainer.value, 'right')
   }
+  if (deliveryBannersContainer.value) {
+    deliveryBannersScrollInterval = startAutoScroll(deliveryBannersContainer.value, 'right')
+  }
 })
 
 onUnmounted(() => {
   if (storageScrollInterval) clearInterval(storageScrollInterval)
   if (ramScrollInterval) clearInterval(ramScrollInterval)
+  if (deliveryBannersScrollInterval) clearInterval(deliveryBannersScrollInterval)
 })
 
 
@@ -597,17 +613,38 @@ const handleAddToCart = () => {
   gap: 24px;
 }
 
-.delivery-badge {
+.delivery-banners-section {
   background: #fff;
   border-radius: 8px;
-  overflow: hidden;
+  padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.delivery-badge img {
-  width: 100%;
+.delivery-banners-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.delivery-banners-container::-webkit-scrollbar {
+  display: none;
+}
+
+.delivery-banner-item {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delivery-banner-item img {
+  width: 180px;
   height: auto;
   display: block;
+  border-radius: 6px;
 }
 
 .sidebar-title {
