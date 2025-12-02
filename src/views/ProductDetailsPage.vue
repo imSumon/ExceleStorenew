@@ -1,19 +1,5 @@
 <template>
   <div class="product-details-page">
-    <div class="delivery-banners-top-section">
-      <div class="delivery-banners-container" ref="deliveryBannersContainer">
-        <div class="delivery-banner-item">
-          <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-        </div>
-        <div class="delivery-banner-item">
-          <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-        </div>
-        <div class="delivery-banner-item">
-          <img src="/images/banners/image copy copy.png" alt="Free Delivery">
-        </div>
-      </div>
-    </div>
-
     <div class="product-details-container">
       <div class="details-content">
         <div class="details-left">
@@ -76,6 +62,20 @@
             </div>
             <div v-if="activeTab === 'Video'" class="video-content">
               <p>Product video will be displayed here.</p>
+            </div>
+          </div>
+
+          <div class="delivery-banners-left-section">
+            <div class="delivery-banners-container" ref="deliveryBannersContainer">
+              <div class="delivery-banner-item">
+                <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+              </div>
+              <div class="delivery-banner-item">
+                <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+              </div>
+              <div class="delivery-banner-item">
+                <img src="/images/banners/image copy copy.png" alt="Free Delivery">
+              </div>
             </div>
           </div>
         </div>
@@ -613,12 +613,11 @@ const handleAddToCart = () => {
   gap: 24px;
 }
 
-.delivery-banners-top-section {
+.delivery-banners-left-section {
   background: #fff;
   border-radius: 12px;
   padding: 20px;
-  margin: 0 auto 32px;
-  max-width: 1400px;
+  margin-top: 32px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
