@@ -185,7 +185,7 @@
               </div>
             </div>
 
-            <div v-if="paymentType === 'emi'" class="credit-card-emi">
+            <div v-show="paymentType === 'emi'" class="credit-card-emi">
               <button class="emi-calculator-btn" @click="emiAccordionOpen = !emiAccordionOpen">
                 <span class="btn-icon">🏦</span>
                 <span class="btn-text">{{ emiAccordionOpen ? 'Close EMI Calculator' : 'Calculate Your Bank EMI' }}</span>
