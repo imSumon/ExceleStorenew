@@ -332,10 +332,16 @@ const handleImageClick = (img: string) => {
 watch(paymentType, (newValue) => {
   if (newValue === 'emi') {
     emiAccordionOpen.value = true
+    setTimeout(() => {
+      const emiSection = document.querySelector('.credit-card-emi')
+      if (emiSection) {
+        emiSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }
+    }, 100)
   } else {
     emiAccordionOpen.value = false
   }
-})
+}, { immediate: true })
 </script>
 
 <style scoped>
