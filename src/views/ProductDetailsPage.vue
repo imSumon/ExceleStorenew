@@ -659,7 +659,7 @@ watch(paymentType, (newValue) => {
   padding: 8px 20px;
   border: 2px solid #ddd;
   background: #fff;
-  border-radius: 24px;
+  border-radius: 50px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
