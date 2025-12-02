@@ -1026,44 +1026,70 @@ const handleVerticalScroll = (e: MouseEvent) => {
 
 .credit-card-emi {
   background: #f5f5f5;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #e0e0e0;
+  border: 2px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.credit-card-emi:hover {
+  border-color: #0066ff;
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.1);
 }
 
 .accordion-btn {
   width: 100%;
-  padding: 16px;
+  padding: 18px 20px;
   background: transparent;
   border: none;
   text-align: left;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: #000;
+  position: relative;
+}
+
+.accordion-btn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #0066ff, #00bfff);
+  transition: width 0.3s ease;
 }
 
 .accordion-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 102, 255, 0.08);
+  color: #0066ff;
+}
+
+.accordion-btn:hover::before {
+  width: 100%;
 }
 
 .accordion-content {
-  padding: 20px;
+  padding: 24px;
   background: #fff;
-  border-top: 1px solid #e0e0e0;
-  animation: slideDown 0.3s ease-out;
+  border-top: 2px solid #e0e0e0;
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    max-height: 0;
+    transform: translateY(-20px);
   }
   to {
     opacity: 1;
+    max-height: 500px;
     transform: translateY(0);
   }
 }
@@ -1085,45 +1111,66 @@ const handleVerticalScroll = (e: MouseEvent) => {
 .bank-dropdown,
 .tenure-dropdown {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 14px 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
   background: #fff;
-  transition: border-color 0.2s;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 .bank-dropdown:hover,
 .tenure-dropdown:hover {
-  border-color: #000;
+  border-color: #0066ff;
+  background: rgba(0, 102, 255, 0.02);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.1);
 }
 
 .bank-dropdown:focus,
 .tenure-dropdown:focus {
   outline: none;
   border-color: #0066ff;
-  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.15);
+  transform: translateY(-2px);
 }
 
 .emi-calculation {
   margin-top: 20px;
-  padding: 16px;
-  background: #f8f8f8;
-  border-radius: 8px;
-  border-left: 4px solid #0066ff;
+  padding: 20px;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%);
+  border-radius: 12px;
+  border-left: 5px solid #0066ff;
+  animation: fadeIn 0.4s ease-out;
+  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.08);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .emi-total {
-  font-size: 18px;
-  font-weight: 700;
-  color: #000;
-  margin-bottom: 8px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0066ff;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
 }
 
 .emi-monthly {
-  font-size: 14px;
-  color: #666;
+  font-size: 15px;
+  color: #333;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 @media (max-width: 1024px) {
