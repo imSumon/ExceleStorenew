@@ -248,7 +248,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const product = ref({
   id: 1,
@@ -328,6 +328,14 @@ const emiMonthly = computed(() => {
 const handleImageClick = (img: string) => {
   selectedImage.value = img
 }
+
+watch(paymentType, (newValue) => {
+  if (newValue === 'emi') {
+    emiAccordionOpen.value = true
+  } else {
+    emiAccordionOpen.value = false
+  }
+})
 </script>
 
 <style scoped>
