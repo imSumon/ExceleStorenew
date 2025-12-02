@@ -221,47 +221,6 @@
               </div>
             </div>
 
-            <div v-show="paymentType === 'emi'" class="credit-card-emi-static">
-              <div class="emi-header">
-                <span>Credit Card EMI</span>
-                <button class="toggle-btn" @click="creditCardEmiOpen = !creditCardEmiOpen">
-                  {{ creditCardEmiOpen ? '−' : '+' }}
-                </button>
-              </div>
-              <div v-if="creditCardEmiOpen" class="emi-content">
-                <div class="form-group">
-                  <label>Select Bank</label>
-                  <select v-model="staticSelectedBank" class="form-select">
-                    <option value="">Select your bank</option>
-                    <option value="brac">BRAC Bank</option>
-                    <option value="dbbl">Dutch-Bangla Bank</option>
-                    <option value="city">City Bank</option>
-                    <option value="eastern">Eastern Bank</option>
-                    <option value="scb">Standard Chartered</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Tenure:</label>
-                  <select v-model="staticSelectedTenure" class="form-select">
-                    <option value="">Select Tenure</option>
-                    <option value="3">3 Months</option>
-                    <option value="6">6 Months</option>
-                    <option value="9">9 Months</option>
-                    <option value="12">12 Months</option>
-                  </select>
-                </div>
-                <div v-if="staticSelectedBank && staticSelectedTenure" class="emi-result">
-                  <div class="result-row">
-                    <span>Total:</span>
-                    <strong>৳ {{ staticEmiTotal }}</strong>
-                  </div>
-                  <div class="result-row">
-                    <span>Monthly:</span>
-                    <strong>৳ {{ staticEmiMonthly }} ({{ staticSelectedTenure }} Month)</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             <div class="care-options">
               <div class="care-label">We Care:</div>
@@ -337,9 +296,6 @@ const paymentType = ref('discount')
 const emiAccordionOpen = ref(false)
 const selectedBank = ref('')
 const selectedTenure = ref('')
-const creditCardEmiOpen = ref(false)
-const staticSelectedBank = ref('')
-const staticSelectedTenure = ref('')
 
 const thumbnailContainer = ref<HTMLElement | null>(null)
 const storageContainer = ref<HTMLElement | null>(null)
@@ -377,16 +333,6 @@ const emiMonthly = computed(() => {
   return Math.ceil(price / parseInt(selectedTenure.value)).toLocaleString()
 })
 
-const staticEmiTotal = computed(() => {
-  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
-  return price.toLocaleString()
-})
-
-const staticEmiMonthly = computed(() => {
-  if (!staticSelectedTenure.value) return '0.00'
-  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
-  return Math.ceil(price / parseInt(staticSelectedTenure.value)).toLocaleString()
-})
 
 const handleImageClick = (img: string) => {
   selectedImage.value = img
