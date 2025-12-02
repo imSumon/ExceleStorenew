@@ -697,7 +697,7 @@ watch(paymentType, (newValue) => {
   background: #000;
   color: #fff;
   border-color: #000;
-  transform: scale(1.05);
+  border-radius: 50px;
 }
 
 .color-buttons {
