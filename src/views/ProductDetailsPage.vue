@@ -221,7 +221,7 @@
               </div>
             </div>
 
-            <div class="credit-card-emi-static">
+            <div v-show="paymentType === 'emi'" class="credit-card-emi-static">
               <div class="emi-header">
                 <span>Credit Card EMI</span>
                 <button class="toggle-btn" @click="creditCardEmiOpen = !creditCardEmiOpen">
@@ -588,13 +588,36 @@ watch(paymentType, (newValue) => {
 }
 
 .sticky-sidebar {
-  position: relative;
+  position: sticky;
+  top: 20px;
   background: #f8f8f8;
   border-radius: 12px;
   padding: 32px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #bbb #f0f0f0;
+}
+
+.sticky-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 4px;
+}
+
+.sticky-sidebar::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }
 
 .delivery-badge {
