@@ -296,7 +296,7 @@ const loadedProduct = computed(() => getProductById(productId.value))
 const product = ref<Product>(loadedProduct.value || {
   id: 1,
   name: 'Galaxy A07 (4 GB Memory)',
-  price: '$199',
+  price: '৳9,749',
   image: '/images/products/3.png',
   badge: 'New',
   colors: ['#1A3A4A', '#2A2A2A', '#C8B8D8'],

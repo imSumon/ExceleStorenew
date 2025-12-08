@@ -219,10 +219,10 @@
             </div>
             <div class="product-pricing">
               <div class="price-main">
-                <span class="price-amount">₹ {{ product.priceAmount || '9749.00' }}</span>
-                <span class="price-save">Save ₹ {{ product.savingsAmount || '750.00' }}</span>
+                <span class="price-amount">৳{{ product.priceAmount || '9749.00' }}</span>
+                <span class="price-save">Save ৳{{ product.savingsAmount || '750.00' }}</span>
               </div>
-              <p class="price-mrp">MRP: ₹ {{ product.mrp || '10499.00' }} (Incl. of all taxes)</p>
+              <p class="price-mrp">MRP: ৳{{ product.mrp || '10499.00' }} (Incl. of all taxes)</p>
             </div>
             <div class="product-card-actions">
               <button class="btn-buy-now">Buy now</button>

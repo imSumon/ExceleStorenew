@@ -21,7 +21,7 @@ export const products: Product[] = [
   {
     id: 1,
     name: 'Galaxy A07 (4 GB Memory)',
-    price: '$199',
+    price: '৳9,749',
     image: '/images/products/3.png',
     badge: 'New',
     colors: ['#1A3A4A', '#2A2A2A', '#C8B8D8'],
@@ -39,7 +39,7 @@ export const products: Product[] = [
   {
     id: 2,
     name: 'Galaxy F07 (4 GB Memory)',
-    price: '$299',
+    price: '৳25,000',
     image: '/images/products/6.png',
     badge: 'New',
     colors: ['#1A5A4A'],
@@ -57,7 +57,7 @@ export const products: Product[] = [
   {
     id: 3,
     name: 'Galaxy A17 5G',
-    price: '$299',
+    price: '৳14,999',
     image: '/images/products/1.png',
     badge: 'Quick Look',
     colors: ['#D4D4D4', '#1A1A1A', '#4A5A8A'],
@@ -70,7 +70,7 @@ export const products: Product[] = [
   {
     id: 4,
     name: 'Galaxy A26 5G',
-    price: '$349',
+    price: '৳19,999',
     image: '/images/products/4.png',
     badge: 'Quick Look',
     colors: ['#1A1A1A', '#D4D4D4'],
@@ -83,7 +83,7 @@ export const products: Product[] = [
   {
     id: 5,
     name: 'Galaxy A36 5G',
-    price: '$399',
+    price: '৳29,999',
     image: '/images/products/5.png',
     badge: 'Quick Look',
     colors: ['#E8E8E8', '#1A1A1A', '#5A6F9E'],
@@ -96,7 +96,7 @@ export const products: Product[] = [
   {
     id: 6,
     name: 'Galaxy A56 5G',
-    price: '$449',
+    price: '৳39,999',
     image: '/images/products/6.png',
     badge: 'Quick Look',
     colors: ['#D4D4D4', '#1A1A1A', '#8A9A7A'],
@@ -109,7 +109,7 @@ export const products: Product[] = [
   {
     id: 7,
     name: 'Galaxy A06',
-    price: '$149',
+    price: '৳8,999',
     image: '/images/products/7.png',
     badge: 'Quick Look',
     colors: ['#E8E8E8', '#1A1A1A', '#C8B8D8'],
@@ -122,7 +122,7 @@ export const products: Product[] = [
   {
     id: 8,
     name: 'Galaxy A16 5G',
-    price: '$249',
+    price: '৳12,999',
     image: '/images/products/8.png',
     badge: 'Quick Look',
     colors: ['#1A1A1A', '#4A8A9A'],
@@ -135,7 +135,7 @@ export const products: Product[] = [
   {
     id: 9,
     name: 'Galaxy Z Flip6',
-    price: '$999',
+    price: '৳109,999',
     image: '/images/products/Galaxy-Z-Flip7.jpg',
     badge: 'Quick Look',
     colors: ['#C8B8D8'],
@@ -148,7 +148,7 @@ export const products: Product[] = [
   {
     id: 10,
     name: 'Galaxy Z Fold6',
-    price: '$1799',
+    price: '৳149,999',
     image: '/images/products/9.png',
     badge: 'Quick Look',
     colors: ['#C8C8C8'],
@@ -161,7 +161,7 @@ export const products: Product[] = [
   {
     id: 11,
     name: 'Galaxy S25 Ultra',
-    price: '$1299',
+    price: '৳139,999',
     image: '/images/products/10.png',
     badge: 'Quick Look',
     colors: ['#5A6A7A', '#1A1A1A'],
@@ -174,7 +174,7 @@ export const products: Product[] = [
   {
     id: 12,
     name: 'Galaxy S25+',
-    price: '$999',
+    price: '৳99,999',
     image: '/images/products/TabS10_Lite.jpg',
     badge: 'Quick Look',
     colors: ['#5A6F9E', '#1A1A1A'],

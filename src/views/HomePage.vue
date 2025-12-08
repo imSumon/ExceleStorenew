@@ -80,10 +80,10 @@ const applianceProducts = [
 ]
 
 const recommendedProducts = [
-  { id: 1, name: 'Galaxy Z Flip7', price: '₹ 109999.00', image: '/images/products/Galaxy-Z-Flip7.jpg' },
-  { id: 2, name: 'Galaxy Watch6 Classic', price: '₹ 44999.00', image: '/images/products/watch1.jpg' },
-  { id: 3, name: 'Galaxy Watch Ultra', price: '₹ 49999.00', image: '/images/products/watch2.jpg' },
-  { id: 4, name: 'Galaxy Tab S10 Lite', price: '₹ 39999.00', image: '/images/products/TabS10_Lite.jpg' }
+  { id: 1, name: 'Galaxy Z Flip7', price: '৳109,999', image: '/images/products/Galaxy-Z-Flip7.jpg' },
+  { id: 2, name: 'Galaxy Watch6 Classic', price: '৳44,999', image: '/images/products/watch1.jpg' },
+  { id: 3, name: 'Galaxy Watch Ultra', price: '৳49,999', image: '/images/products/watch2.jpg' },
+  { id: 4, name: 'Galaxy Tab S10 Lite', price: '৳39,999', image: '/images/products/TabS10_Lite.jpg' }
 ]
 
 const stories = [
