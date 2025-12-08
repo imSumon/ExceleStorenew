@@ -188,31 +188,34 @@
                 <span class="btn-arrow">{{ emiAccordionOpen ? '▲' : '▼' }}</span>
               </button>
               <div v-if="emiAccordionOpen" class="accordion-content">
-                <div class="bank-selection">
-                  <label>Select Bank</label>
-                  <select v-model="selectedBank" class="bank-dropdown">
-                    <option value="">Select your bank</option>
-                    <option value="brac">BRAC Bank</option>
-                    <option value="dbbl">Dutch-Bangla Bank</option>
-                    <option value="city">City Bank</option>
-                    <option value="eastern">Eastern Bank</option>
-                    <option value="scb">Standard Chartered</option>
-                  </select>
-                </div>
-                <div class="tenure-selection">
-                  <label>Tenure:</label>
-                  <select v-model="selectedTenure" class="tenure-dropdown">
-                    <option value="">Select Tenure</option>
-                    <option value="3">3 Months</option>
-                    <option value="6">6 Months</option>
-                    <option value="12">12 Months</option>
-                    <option value="18">18 Months</option>
-                    <option value="24">24 Months</option>
-                  </select>
-                </div>
-                <div v-if="selectedBank && selectedTenure" class="emi-calculation">
-                  <div class="emi-total">Total: ৳ {{ emiTotal }}</div>
-                  <div class="emi-monthly">Monthly: ৳ {{ emiMonthly }} ({{ selectedTenure }} Month{{ parseInt(selectedTenure) > 1 ? 's' : '' }})</div>
+                <div class="emi-plans-list">
+                  <label>Select EMI Plan:</label>
+                  <div class="emi-plan-options">
+                    <div
+                      v-for="plan in emiPlansFromDB"
+                      :key="plan.id"
+                      class="emi-plan-card"
+                      :class="{ active: selectedEMIPlan?.id === plan.id }"
+                      @click="selectEMIPlan(plan)"
+                    >
+                      <div class="plan-header">
+                        <h4>{{ plan.name }}</h4>
+                        <span class="plan-interest" v-if="plan.interest_rate === 0">No Cost EMI</span>
+                        <span class="plan-interest" v-else>{{ plan.interest_rate }}% Interest</span>
+                      </div>
+                      <div class="plan-details">
+                        <p>Minimum Amount: ৳{{ plan.min_amount.toLocaleString() }}</p>
+                        <p v-if="plan.processing_fee > 0">Processing Fee: ৳{{ plan.processing_fee }}</p>
+                        <p v-else class="no-fee">No Processing Fee</p>
+                      </div>
+                      <div class="plan-emi" v-if="canAvailEMI(plan.min_amount)">
+                        <strong>~৳{{ calculatePlanEMI(plan) }}/month</strong>
+                      </div>
+                      <div class="plan-ineligible" v-else>
+                        <small>Add ৳{{ (plan.min_amount - cartValue).toLocaleString() }} more to avail</small>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -276,10 +279,14 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useCart } from '../store/cartStore'
+import { useCart, type EMIPlan } from '../store/cartStore'
+import { fetchEMIPlans, type EMIPlanDB } from '../services/supabase'
 
 const router = useRouter()
-const { addToCart } = useCart()
+const { addToCart, setEMIPlan } = useCart()
+
+const emiPlansFromDB = ref<EMIPlanDB[]>([])
+const selectedEMIPlan = ref<EMIPlan | null>(null)
 
 const product = ref({
   id: 1,
@@ -317,8 +324,6 @@ const selectedColor = ref(product.value.colors[0])
 const quantity = ref(1)
 const paymentType = ref('discount')
 const emiAccordionOpen = ref(false)
-const selectedBank = ref('')
-const selectedTenure = ref('')
 
 const thumbnailContainer = ref<HTMLElement | null>(null)
 const storageContainer = ref<HTMLElement | null>(null)
@@ -362,13 +367,15 @@ const prevBanner = () => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (storageContainer.value) {
     storageScrollInterval = startAutoScroll(storageContainer.value, 'right')
   }
   if (ramContainer.value) {
     ramScrollInterval = startAutoScroll(ramContainer.value, 'right')
   }
+
+  emiPlansFromDB.value = await fetchEMIPlans()
 })
 
 onUnmounted(() => {
@@ -397,18 +404,6 @@ const decreaseQuantity = () => {
   }
 }
 
-const emiTotal = computed(() => {
-  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
-  return price.toLocaleString()
-})
-
-const emiMonthly = computed(() => {
-  if (!selectedTenure.value) return '0.00'
-  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
-  return Math.ceil(price / parseInt(selectedTenure.value)).toLocaleString()
-})
-
-
 const handleImageClick = (img: string) => {
   selectedImage.value = img
 }
@@ -421,7 +416,60 @@ watch(paymentType, (newValue) => {
   }
 })
 
+const cartValue = computed(() => {
+  const price = parseFloat(product.value.priceAmount.replace(/[^0-9.]/g, ''))
+  return price * quantity.value
+})
+
+const canAvailEMI = (minAmount: number) => {
+  return cartValue.value >= minAmount
+}
+
+const calculatePlanEMI = (plan: EMIPlanDB) => {
+  const price = cartValue.value
+  if (price < plan.min_amount) return '0'
+
+  const principal = price + plan.processing_fee
+  const months = plan.months
+
+  if (plan.interest_rate === 0) {
+    return Math.ceil(principal / months).toLocaleString()
+  }
+
+  const monthlyInterest = plan.interest_rate / 100 / 12
+  const emi = (principal * monthlyInterest * Math.pow(1 + monthlyInterest, months)) /
+              (Math.pow(1 + monthlyInterest, months) - 1)
+  return Math.ceil(emi).toLocaleString()
+}
+
+const selectEMIPlan = (plan: EMIPlanDB) => {
+  if (!canAvailEMI(plan.min_amount)) {
+    alert(`Please add items worth ৳${plan.min_amount.toLocaleString()} or more to avail this EMI plan`)
+    return
+  }
+
+  selectedEMIPlan.value = {
+    id: plan.id,
+    name: plan.name,
+    months: plan.months,
+    interestRate: plan.interest_rate,
+    minAmount: plan.min_amount,
+    processingFee: plan.processing_fee,
+    active: plan.active
+  }
+
+  setEMIPlan(selectedEMIPlan.value)
+}
+
 const handleAddToCart = () => {
+  if (paymentType.value === 'emi' && selectedEMIPlan.value) {
+    setEMIPlan(selectedEMIPlan.value)
+  } else {
+    setEMIPlan(null)
+  }
+
+  const discountPercent = ((parseFloat(product.value.mrp.replace(/[^0-9.]/g, '')) - parseFloat(product.value.priceAmount.replace(/[^0-9.]/g, ''))) / parseFloat(product.value.mrp.replace(/[^0-9.]/g, ''))) * 100
+
   addToCart({
     name: product.value.name,
     image: product.value.image,
@@ -430,7 +478,9 @@ const handleAddToCart = () => {
     quantity: quantity.value,
     storage: selectedStorage.value,
     ram: selectedRam.value,
-    color: selectedColor.value
+    color: selectedColor.value,
+    discountPercent: discountPercent,
+    productId: String(product.value.id)
   })
 
   router.push('/cart')
@@ -1377,6 +1427,115 @@ const handleAddToCart = () => {
   color: #000;
   font-weight: 700;
   font-size: 15px;
+}
+
+.emi-plans-list {
+  padding: 8px 0;
+}
+
+.emi-plans-list label {
+  display: block;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.emi-plan-options {
+  display: grid;
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.emi-plan-card {
+  padding: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.emi-plan-card:hover {
+  border-color: #0066ff;
+  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.emi-plan-card.active {
+  border-color: #0066ff;
+  background: linear-gradient(135deg, #e6f2ff 0%, #cce5ff 100%);
+  box-shadow: 0 6px 16px rgba(0, 102, 255, 0.2);
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.plan-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+}
+
+.plan-interest {
+  padding: 4px 12px;
+  background: #fff4e6;
+  color: #ff9800;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.emi-plan-card.active .plan-interest {
+  background: #0066ff;
+  color: #fff;
+}
+
+.plan-details {
+  margin-bottom: 12px;
+}
+
+.plan-details p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.plan-details .no-fee {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.plan-emi {
+  padding: 12px;
+  background: rgba(0, 102, 255, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.plan-emi strong {
+  font-size: 18px;
+  color: #0066ff;
+}
+
+.plan-ineligible {
+  padding: 8px;
+  background: #fff3cd;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.plan-ineligible small {
+  color: #856404;
+  font-size: 12px;
 }
 
 @media (max-width: 1024px) {

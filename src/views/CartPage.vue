@@ -24,6 +24,7 @@
               <div class="item-price">
                 <span class="current-price">৳{{ item.price.toLocaleString() }}</span>
                 <span class="original-price">৳{{ item.originalPrice.toLocaleString() }}</span>
+                <span v-if="item.discountPercent" class="discount-badge">{{ item.discountPercent.toFixed(0) }}% OFF</span>
               </div>
             </div>
             <div class="item-actions">
@@ -37,23 +38,119 @@
           </div>
         </div>
 
-        <div class="cart-summary">
-          <h2>Order Summary</h2>
-          <div class="summary-row">
-            <span>Subtotal ({{ cartCount }} items)</span>
-            <span>৳{{ cartTotal.toLocaleString() }}</span>
+        <div class="cart-sidebar">
+          <div class="coupon-section">
+            <h3>Apply Coupon</h3>
+            <div class="coupon-input-group">
+              <input
+                v-model="couponCode"
+                type="text"
+                placeholder="Enter coupon code"
+                class="coupon-input"
+                :disabled="!!appliedCoupon"
+              >
+              <button
+                v-if="!appliedCoupon"
+                @click="handleApplyCoupon"
+                class="apply-coupon-btn"
+                :disabled="!couponCode || applyingCoupon"
+              >
+                {{ applyingCoupon ? 'Applying...' : 'Apply' }}
+              </button>
+              <button
+                v-else
+                @click="handleRemoveCoupon"
+                class="remove-coupon-btn"
+              >
+                Remove
+              </button>
+            </div>
+            <div v-if="couponError" class="coupon-error">{{ couponError }}</div>
+            <div v-if="appliedCoupon" class="coupon-success">
+              <span class="success-icon">✓</span>
+              <span>Coupon "{{ appliedCoupon.code }}" applied successfully!</span>
+            </div>
           </div>
-          <div class="summary-row">
-            <span>Shipping</span>
-            <span>Free</span>
+
+          <div class="cart-summary">
+            <h2>Order Details</h2>
+
+            <div class="summary-section">
+              <div class="summary-row">
+                <span>Subtotal ({{ cartCount }} items)</span>
+                <span>৳{{ subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</span>
+              </div>
+
+              <div v-if="productDiscounts > 0" class="summary-row discount">
+                <span>Product Discounts</span>
+                <span>-৳{{ productDiscounts.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</span>
+              </div>
+
+              <div v-if="couponDiscount > 0" class="summary-row discount">
+                <span>Coupon Discount ({{ appliedCoupon?.code }})</span>
+                <span>-৳{{ couponDiscount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</span>
+              </div>
+
+              <div v-if="totalDiscount > 0" class="summary-row total-savings">
+                <span>Total Savings</span>
+                <span>৳{{ totalDiscount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</span>
+              </div>
+            </div>
+
+            <div class="summary-section">
+              <div class="summary-row">
+                <span>Tax (18%)</span>
+                <span>৳{{ taxAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</span>
+              </div>
+
+              <div class="summary-row">
+                <span>Shipping</span>
+                <span class="free-badge">Free</span>
+              </div>
+            </div>
+
+            <div v-if="appliedCoupon?.giftItem" class="gift-section">
+              <div class="gift-icon">🎁</div>
+              <div class="gift-text">
+                <strong>Free Gift!</strong>
+                <p>{{ appliedCoupon.giftItem }}</p>
+              </div>
+            </div>
+
+            <div v-if="selectedEMI" class="emi-section">
+              <div class="emi-header">
+                <span class="emi-icon">💳</span>
+                <strong>EMI Selected</strong>
+              </div>
+              <div class="emi-details">
+                <p class="emi-plan-name">{{ selectedEMI.name }}</p>
+                <p class="emi-monthly">
+                  <strong>৳{{ emiMonthlyAmount?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</strong>/month
+                </p>
+                <p class="emi-info">
+                  {{ selectedEMI.interestRate === 0 ? 'No Cost EMI' : `${selectedEMI.interestRate}% Interest` }}
+                  • {{ selectedEMI.months }} Months
+                </p>
+                <p v-if="selectedEMI.processingFee > 0" class="emi-fee">
+                  Processing Fee: ৳{{ selectedEMI.processingFee }}
+                </p>
+              </div>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-row total">
+              <span>Total Amount</span>
+              <span>৳{{ finalTotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</span>
+            </div>
+
+            <button class="checkout-btn" @click="$router.push('/checkout')">
+              Proceed to Checkout
+            </button>
+            <button class="continue-shopping-btn" @click="$router.push('/')">
+              Continue Shopping
+            </button>
           </div>
-          <div class="summary-divider"></div>
-          <div class="summary-row total">
-            <span>Total</span>
-            <span>৳{{ cartTotal.toLocaleString() }}</span>
-          </div>
-          <button class="checkout-btn" @click="$router.push('/checkout')">Proceed to Checkout</button>
-          <button class="continue-shopping-btn" @click="$router.push('/')">Continue Shopping</button>
         </div>
       </div>
     </div>
@@ -61,9 +158,81 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useCart } from '../store/cartStore'
+import { verifyCoupon } from '../services/supabase'
 
-const { items, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart()
+const {
+  items,
+  removeFromCart,
+  updateQuantity,
+  cartCount,
+  subtotal,
+  productDiscounts,
+  couponDiscount,
+  totalDiscount,
+  taxAmount,
+  finalTotal,
+  selectedEMI,
+  appliedCoupon,
+  emiMonthlyAmount,
+  applyCoupon,
+  removeCoupon
+} = useCart()
+
+const couponCode = ref('')
+const couponError = ref('')
+const applyingCoupon = ref(false)
+
+const handleApplyCoupon = async () => {
+  if (!couponCode.value.trim()) {
+    couponError.value = 'Please enter a coupon code'
+    return
+  }
+
+  applyingCoupon.value = true
+  couponError.value = ''
+
+  try {
+    const coupon = await verifyCoupon(couponCode.value.trim())
+
+    if (!coupon) {
+      couponError.value = 'Invalid or expired coupon code'
+      applyingCoupon.value = false
+      return
+    }
+
+    if (subtotal.value < coupon.min_order_amount) {
+      couponError.value = `Minimum order amount is ৳${coupon.min_order_amount.toLocaleString()}`
+      applyingCoupon.value = false
+      return
+    }
+
+    applyCoupon({
+      id: coupon.id,
+      code: coupon.code,
+      discountType: coupon.discount_type,
+      discountValue: coupon.discount_value,
+      minOrderAmount: coupon.min_order_amount,
+      maxDiscount: coupon.max_discount,
+      giftItem: coupon.gift_item,
+      validUntil: coupon.valid_until
+    })
+
+    couponCode.value = ''
+  } catch (error) {
+    console.error('Error applying coupon:', error)
+    couponError.value = 'Failed to apply coupon. Please try again.'
+  } finally {
+    applyingCoupon.value = false
+  }
+}
+
+const handleRemoveCoupon = () => {
+  removeCoupon()
+  couponCode.value = ''
+  couponError.value = ''
+}
 </script>
 
 <style scoped>
@@ -129,7 +298,7 @@ const { items, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart(
 
 .cart-content {
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: 1fr 420px;
   gap: 32px;
 }
 
@@ -147,6 +316,11 @@ const { items, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart(
   grid-template-columns: 120px 1fr auto;
   gap: 24px;
   align-items: center;
+  transition: all 0.3s ease;
+}
+
+.cart-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .item-image {
@@ -192,6 +366,7 @@ const { items, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart(
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .current-price {
@@ -204,6 +379,15 @@ const { items, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart(
   font-size: 16px;
   color: #999;
   text-decoration: line-through;
+}
+
+.discount-badge {
+  background: #4caf50;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .item-actions {
@@ -266,27 +450,142 @@ const { items, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart(
   text-decoration: underline;
 }
 
+.cart-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 120px;
+  height: fit-content;
+}
+
+.coupon-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.coupon-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: #000;
+}
+
+.coupon-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.coupon-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.coupon-input:focus {
+  outline: none;
+  border-color: #0066ff;
+}
+
+.coupon-input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.apply-coupon-btn {
+  padding: 12px 24px;
+  background: #0066ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.apply-coupon-btn:hover:not(:disabled) {
+  background: #0052cc;
+}
+
+.apply-coupon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.remove-coupon-btn {
+  padding: 12px 24px;
+  background: #ff4444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.remove-coupon-btn:hover {
+  background: #cc0000;
+}
+
+.coupon-error {
+  margin-top: 12px;
+  padding: 12px;
+  background: #fff3cd;
+  color: #856404;
+  border-radius: 8px;
+  font-size: 13px;
+  border-left: 4px solid #ffc107;
+}
+
+.coupon-success {
+  margin-top: 12px;
+  padding: 12px;
+  background: #d4edda;
+  color: #155724;
+  border-radius: 8px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 4px solid #4caf50;
+}
+
+.success-icon {
+  font-size: 18px;
+  font-weight: 700;
+}
+
 .cart-summary {
   background: #fff;
   border-radius: 12px;
-  padding: 32px;
-  height: fit-content;
-  position: sticky;
-  top: 120px;
+  padding: 28px;
 }
 
 .cart-summary h2 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   color: #000;
+}
+
+.summary-section {
+  margin-bottom: 16px;
 }
 
 .summary-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 16px;
-  font-size: 16px;
+  margin-bottom: 12px;
+  font-size: 15px;
 }
 
 .summary-row span:first-child {
@@ -296,6 +595,112 @@ const { items, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart(
 .summary-row span:last-child {
   font-weight: 600;
   color: #000;
+}
+
+.summary-row.discount span:last-child {
+  color: #4caf50;
+}
+
+.summary-row.total-savings {
+  background: #e8f5e9;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.summary-row.total-savings span {
+  color: #2e7d32;
+}
+
+.free-badge {
+  color: #4caf50 !important;
+  font-weight: 700 !important;
+}
+
+.gift-section {
+  background: linear-gradient(135deg, #fff4e6 0%, #ffe4b5 100%);
+  padding: 16px;
+  border-radius: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: 16px 0;
+  border-left: 4px solid #ff9800;
+}
+
+.gift-icon {
+  font-size: 32px;
+}
+
+.gift-text strong {
+  font-size: 16px;
+  color: #e65100;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.gift-text p {
+  margin: 0;
+  font-size: 14px;
+  color: #5d4037;
+}
+
+.emi-section {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  padding: 16px;
+  border-radius: 12px;
+  margin: 16px 0;
+  border-left: 4px solid #2196f3;
+}
+
+.emi-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.emi-icon {
+  font-size: 24px;
+}
+
+.emi-header strong {
+  font-size: 16px;
+  color: #1565c0;
+}
+
+.emi-details {
+  padding-left: 32px;
+}
+
+.emi-plan-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0d47a1;
+  margin: 0 0 8px 0;
+}
+
+.emi-monthly {
+  font-size: 14px;
+  color: #1565c0;
+  margin: 0 0 4px 0;
+}
+
+.emi-monthly strong {
+  font-size: 20px;
+}
+
+.emi-info {
+  font-size: 13px;
+  color: #424242;
+  margin: 0 0 4px 0;
+}
+
+.emi-fee {
+  font-size: 12px;
+  color: #757575;
+  margin: 0;
 }
 
 .summary-divider {
@@ -308,6 +713,7 @@ const { items, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart(
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 24px;
+  padding-top: 8px;
 }
 
 .summary-row.total span {
@@ -357,7 +763,7 @@ const { items, removeFromCart, updateQuantity, cartTotal, cartCount } = useCart(
     grid-template-columns: 1fr;
   }
 
-  .cart-summary {
+  .cart-sidebar {
     position: static;
   }
 }
