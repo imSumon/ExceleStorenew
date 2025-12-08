@@ -278,17 +278,22 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useCart, type EMIPlan } from '../store/cartStore'
 import { fetchEMIPlans, type EMIPlanDB } from '../services/supabase'
+import { getProductById, type Product } from '../data/products'
 
 const router = useRouter()
+const route = useRoute()
 const { addToCart, setEMIPlan } = useCart()
 
 const emiPlansFromDB = ref<EMIPlanDB[]>([])
 const selectedEMIPlan = ref<EMIPlan | null>(null)
 
-const product = ref({
+const productId = computed(() => parseInt(route.params.id as string))
+const loadedProduct = computed(() => getProductById(productId.value))
+
+const product = ref<Product>(loadedProduct.value || {
   id: 1,
   name: 'Galaxy A07 (4 GB Memory)',
   price: '$199',
@@ -305,6 +310,14 @@ const product = ref({
   storageCapacity: ['64GB'],
   displaySize: '6.3-6.5"',
   features: ['Fast Charging']
+})
+
+watch(loadedProduct, (newProduct) => {
+  if (newProduct) {
+    product.value = newProduct
+    selectedStorage.value = newProduct.storage[0]
+    selectedColor.value = newProduct.colors[0]
+  }
 })
 
 const selectedImage = ref(product.value.image)
@@ -385,12 +398,12 @@ onUnmounted(() => {
 
 
 const discountPrice = computed(() => {
-  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
+  const price = parseInt((product.value.priceAmount || '0').replace(/[^0-9]/g, ''))
   return (price - 7000).toLocaleString()
 })
 
 const emiAmount = computed(() => {
-  const price = parseInt(product.value.priceAmount.replace(/[^0-9]/g, ''))
+  const price = parseInt((product.value.priceAmount || '0').replace(/[^0-9]/g, ''))
   return Math.floor(price / 6).toLocaleString()
 })
 
@@ -417,7 +430,7 @@ watch(paymentType, (newValue) => {
 })
 
 const cartValue = computed(() => {
-  const price = parseFloat(product.value.priceAmount.replace(/[^0-9.]/g, ''))
+  const price = parseFloat((product.value.priceAmount || '0').replace(/[^0-9.]/g, ''))
   return price * quantity.value
 })
 
@@ -468,13 +481,15 @@ const handleAddToCart = () => {
     setEMIPlan(null)
   }
 
-  const discountPercent = ((parseFloat(product.value.mrp.replace(/[^0-9.]/g, '')) - parseFloat(product.value.priceAmount.replace(/[^0-9.]/g, ''))) / parseFloat(product.value.mrp.replace(/[^0-9.]/g, ''))) * 100
+  const mrpValue = parseFloat((product.value.mrp || '0').replace(/[^0-9.]/g, ''))
+  const priceValue = parseFloat((product.value.priceAmount || '0').replace(/[^0-9.]/g, ''))
+  const discountPercent = ((mrpValue - priceValue) / mrpValue) * 100
 
   addToCart({
     name: product.value.name,
     image: product.value.image,
-    price: parseFloat(product.value.priceAmount.replace(/[^0-9.]/g, '')),
-    originalPrice: parseFloat(product.value.mrp.replace(/[^0-9.]/g, '')),
+    price: priceValue,
+    originalPrice: mrpValue,
     quantity: quantity.value,
     storage: selectedStorage.value,
     ram: selectedRam.value,
