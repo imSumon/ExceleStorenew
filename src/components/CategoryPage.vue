@@ -26,13 +26,13 @@
           </div>
 
           <div class="nav-center">
-            <a href="#" class="nav-link active">Mobile</a>
-            <a href="#" class="nav-link">TV & AV</a>
-            <a href="#" class="nav-link">Home Appliances</a>
-            <a href="#" class="nav-link">Computing</a>
-            <a href="#" class="nav-link">Displays</a>
-            <a href="#" class="nav-link">Accessories</a>
-            <a href="#" class="nav-link">SmartThings</a>
+            <router-link to="/category/mobile" class="nav-link" :class="{ active: name === 'mobile' }">Mobile</router-link>
+            <router-link to="/category/tv-av" class="nav-link" :class="{ active: name === 'tv-av' }">TV & AV</router-link>
+            <router-link to="/category/home-appliances" class="nav-link" :class="{ active: name === 'home-appliances' }">Home Appliances</router-link>
+            <router-link to="/category/computing" class="nav-link" :class="{ active: name === 'computing' }">Computing</router-link>
+            <router-link to="/category/displays" class="nav-link" :class="{ active: name === 'displays' }">Displays</router-link>
+            <router-link to="/category/accessories" class="nav-link" :class="{ active: name === 'accessories' }">Accessories</router-link>
+            <router-link to="/category/smartthings" class="nav-link" :class="{ active: name === 'smartthings' }">SmartThings</router-link>
           </div>
 
           <div class="nav-right">
@@ -55,14 +55,12 @@
     </header>
 
     <div class="breadcrumb">
-      <a href="#">Mobile</a>
+      <a href="/">Home</a>
       <span>/</span>
-      <a href="#">Galaxy Smartphones</a>
-      <span>/</span>
-      <span>All Galaxy Smartphones</span>
+      <span>{{ categoryBreadcrumb }}</span>
     </div>
 
-    <h1 class="page-title">All Galaxy Smartphones</h1>
+    <h1 class="page-title">{{ categoryTitle }}</h1>
 
     <div class="category-tabs-container">
       <div class="category-tabs">
@@ -267,7 +265,37 @@ interface Product {
   mrp?: string
 }
 
+const props = defineProps<{
+  name: string
+}>()
+
 const router = useRouter()
+
+const categoryTitle = computed(() => {
+  const titles: Record<string, string> = {
+    'mobile': 'All Galaxy Smartphones',
+    'tv-av': 'TV & Audio Products',
+    'home-appliances': 'Home Appliances',
+    'computing': 'Computing Products',
+    'displays': 'Displays & Monitors',
+    'accessories': 'Accessories',
+    'smartthings': 'SmartThings'
+  }
+  return titles[props.name] || 'Products'
+})
+
+const categoryBreadcrumb = computed(() => {
+  const breadcrumbs: Record<string, string> = {
+    'mobile': 'Mobile',
+    'tv-av': 'TV & AV',
+    'home-appliances': 'Home Appliances',
+    'computing': 'Computing',
+    'displays': 'Displays',
+    'accessories': 'Accessories',
+    'smartthings': 'SmartThings'
+  }
+  return breadcrumbs[props.name] || 'Category'
+})
 const mobileFiltersOpen = ref(false)
 const sortBy = ref('recommended')
 

@@ -12,9 +12,10 @@ const routes = [
     component: HomePage
   },
   {
-    path: '/category',
+    path: '/category/:name',
     name: 'Category',
-    component: CategoryPage
+    component: CategoryPage,
+    props: true
   },
   {
     path: '/product/:id',

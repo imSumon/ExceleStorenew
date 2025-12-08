@@ -20,13 +20,13 @@
         </div>
 
         <div class="nav-center" :class="{ active: mobileMenuOpen }">
-          <a href="#" class="nav-link" @click.prevent="openCategory">Mobile</a>
-          <a href="#" class="nav-link">TV & AV</a>
-          <a href="#" class="nav-link">Home Appliances</a>
-          <a href="#" class="nav-link">Computing</a>
-          <a href="#" class="nav-link">Displays</a>
-          <a href="#" class="nav-link">Accessories</a>
-          <a href="#" class="nav-link">SmartThings</a>
+          <router-link to="/category/mobile" class="nav-link" @click="closeMobileMenu">Mobile</router-link>
+          <router-link to="/category/tv-av" class="nav-link" @click="closeMobileMenu">TV & AV</router-link>
+          <router-link to="/category/home-appliances" class="nav-link" @click="closeMobileMenu">Home Appliances</router-link>
+          <router-link to="/category/computing" class="nav-link" @click="closeMobileMenu">Computing</router-link>
+          <router-link to="/category/displays" class="nav-link" @click="closeMobileMenu">Displays</router-link>
+          <router-link to="/category/accessories" class="nav-link" @click="closeMobileMenu">Accessories</router-link>
+          <router-link to="/category/smartthings" class="nav-link" @click="closeMobileMenu">SmartThings</router-link>
         </div>
 
         <div class="nav-right">
@@ -61,7 +61,6 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useCart } from '../store/cartStore'
 
-const emit = defineEmits(['open-category'])
 const { cartCount } = useCart()
 
 const mobileMenuOpen = ref(false)
@@ -71,8 +70,7 @@ const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
 }
 
-const openCategory = () => {
-  emit('open-category')
+const closeMobileMenu = () => {
   mobileMenuOpen.value = false
 }
 
