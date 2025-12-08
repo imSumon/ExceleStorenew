@@ -25,14 +25,14 @@
             </a>
           </div>
 
-          <div class="nav-center">
-            <router-link to="/category/mobile" class="nav-link" :class="{ active: name === 'mobile' }">Mobile</router-link>
-            <router-link to="/category/tv-av" class="nav-link" :class="{ active: name === 'tv-av' }">TV & AV</router-link>
-            <router-link to="/category/home-appliances" class="nav-link" :class="{ active: name === 'home-appliances' }">Home Appliances</router-link>
-            <router-link to="/category/computing" class="nav-link" :class="{ active: name === 'computing' }">Computing</router-link>
-            <router-link to="/category/displays" class="nav-link" :class="{ active: name === 'displays' }">Displays</router-link>
-            <router-link to="/category/accessories" class="nav-link" :class="{ active: name === 'accessories' }">Accessories</router-link>
-            <router-link to="/category/smartthings" class="nav-link" :class="{ active: name === 'smartthings' }">SmartThings</router-link>
+          <div class="nav-center" :class="{ active: mobileMenuOpen }">
+            <router-link to="/category/mobile" class="nav-link" :class="{ active: name === 'mobile' }" @click="closeMobileMenu">Mobile</router-link>
+            <router-link to="/category/tv-av" class="nav-link" :class="{ active: name === 'tv-av' }" @click="closeMobileMenu">TV & AV</router-link>
+            <router-link to="/category/home-appliances" class="nav-link" :class="{ active: name === 'home-appliances' }" @click="closeMobileMenu">Home Appliances</router-link>
+            <router-link to="/category/computing" class="nav-link" :class="{ active: name === 'computing' }" @click="closeMobileMenu">Computing</router-link>
+            <router-link to="/category/displays" class="nav-link" :class="{ active: name === 'displays' }" @click="closeMobileMenu">Displays</router-link>
+            <router-link to="/category/accessories" class="nav-link" :class="{ active: name === 'accessories' }" @click="closeMobileMenu">Accessories</router-link>
+            <router-link to="/category/smartthings" class="nav-link" :class="{ active: name === 'smartthings' }" @click="closeMobileMenu">SmartThings</router-link>
           </div>
 
           <div class="nav-right">
@@ -42,11 +42,18 @@
                 <path d="m21 21-4.35-4.35"></path>
               </svg>
             </button>
-            <button class="icon-btn cart-btn" aria-label="Cart">
+            <button class="icon-btn cart-btn" aria-label="Cart" @click="router.push('/cart')">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="9" cy="21" r="1"></circle>
                 <circle cx="20" cy="21" r="1"></circle>
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+            </button>
+            <button class="icon-btn menu-btn" @click="toggleMobileMenu" aria-label="Menu">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
               </svg>
             </button>
           </div>
@@ -280,6 +287,7 @@ const categoryBreadcrumb = computed(() => {
   return breadcrumbs[props.name] || 'Category'
 })
 const mobileFiltersOpen = ref(false)
+const mobileMenuOpen = ref(false)
 const sortBy = ref('recommended')
 
 const openFilters = ref({
@@ -335,6 +343,14 @@ const filteredProducts = computed(() => {
 
 const toggleFilter = (filterName: keyof typeof openFilters.value) => {
   openFilters.value[filterName] = !openFilters.value[filterName]
+}
+
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false
 }
 </script>
 
@@ -484,6 +500,10 @@ const toggleFilter = (filterName: keyof typeof openFilters.value) => {
 
 .icon-btn:hover {
   opacity: 0.7;
+}
+
+.menu-btn {
+  display: none;
 }
 
 .breadcrumb {
@@ -1257,7 +1277,31 @@ const toggleFilter = (filterName: keyof typeof openFilters.value) => {
   }
 
   .nav-center {
-    display: none;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    background: #000;
+    flex-direction: column;
+    gap: 0;
+    padding: 20px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 999;
+  }
+
+  .nav-center.active {
+    transform: translateX(0);
+  }
+
+  .nav-link {
+    padding: 16px 0;
+    width: 100%;
+    border-bottom: 1px solid #333;
+  }
+
+  .menu-btn {
+    display: flex;
   }
 
   .page-title {
