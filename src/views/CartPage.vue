@@ -72,6 +72,61 @@
             </div>
           </div>
 
+          <div class="delivery-options-section">
+            <h3>Delivery Options</h3>
+            <div class="delivery-type-selector">
+              <label class="delivery-option" :class="{ active: deliveryType === 'home' }">
+                <input type="radio" value="home" v-model="deliveryType" name="delivery">
+                <div class="option-content">
+                  <span class="option-icon">🏠</span>
+                  <div class="option-text">
+                    <strong>Home Delivery</strong>
+                    <small>Free delivery to your doorstep</small>
+                  </div>
+                </div>
+              </label>
+
+              <label class="delivery-option" :class="{ active: deliveryType === 'pickup' }">
+                <input type="radio" value="pickup" v-model="deliveryType" name="delivery">
+                <div class="option-content">
+                  <span class="option-icon">📍</span>
+                  <div class="option-text">
+                    <strong>Pick-up Point</strong>
+                    <small>Collect from our store</small>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <div v-if="deliveryType === 'pickup'" class="pickup-location-selector">
+              <label>Select Pick-up Location:</label>
+              <select v-model="selectedPickupPoint" class="pickup-dropdown">
+                <option value="">Choose a location</option>
+                <option value="dhaka-gulshan">Dhaka - Gulshan Store</option>
+                <option value="dhaka-dhanmondi">Dhaka - Dhanmondi Store</option>
+                <option value="dhaka-uttara">Dhaka - Uttara Store</option>
+                <option value="chittagong-agrabad">Chittagong - Agrabad Store</option>
+                <option value="sylhet-zindabazar">Sylhet - Zindabazar Store</option>
+              </select>
+              <div v-if="selectedPickupPoint" class="pickup-info">
+                <p class="pickup-address">{{ getPickupAddress(selectedPickupPoint) }}</p>
+                <p class="pickup-hours">⏰ Working Hours: 10:00 AM - 8:00 PM</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="special-note-section">
+            <h3>Special Note</h3>
+            <textarea
+              v-model="specialNote"
+              class="special-note-textarea"
+              placeholder="Add delivery instructions or special requests (Optional)"
+              rows="4"
+              maxlength="500"
+            ></textarea>
+            <div class="character-count">{{ specialNote.length }}/500</div>
+          </div>
+
           <div class="cart-summary">
             <h2>Order Details</h2>
 
@@ -183,6 +238,21 @@ const {
 const couponCode = ref('')
 const couponError = ref('')
 const applyingCoupon = ref(false)
+const deliveryType = ref('home')
+const selectedPickupPoint = ref('')
+const specialNote = ref('')
+
+const pickupLocations = {
+  'dhaka-gulshan': 'House 45, Road 11, Block E, Gulshan 1, Dhaka 1212',
+  'dhaka-dhanmondi': '127/A, Dhanmondi Road 27, Dhaka 1209',
+  'dhaka-uttara': 'House 12, Sector 7, Uttara, Dhaka 1230',
+  'chittagong-agrabad': 'Agrabad C/A, 2nd Floor, Chittagong 4100',
+  'sylhet-zindabazar': 'Zindabazar Point, East Zindabazar, Sylhet 3100'
+}
+
+const getPickupAddress = (locationId: string) => {
+  return pickupLocations[locationId as keyof typeof pickupLocations] || ''
+}
 
 const handleApplyCoupon = async () => {
   if (!couponCode.value.trim()) {
@@ -562,6 +632,173 @@ const handleRemoveCoupon = () => {
 .success-icon {
   font-size: 18px;
   font-weight: 700;
+}
+
+.delivery-options-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.delivery-options-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  color: #000;
+}
+
+.delivery-type-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.delivery-option {
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.delivery-option:hover {
+  border-color: #0066ff;
+  background: #f8f9ff;
+}
+
+.delivery-option.active {
+  border-color: #0066ff;
+  background: #e6f2ff;
+  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.15);
+}
+
+.delivery-option input[type="radio"] {
+  display: none;
+}
+
+.option-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.option-icon {
+  font-size: 28px;
+}
+
+.option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.option-text strong {
+  font-size: 16px;
+  color: #000;
+}
+
+.option-text small {
+  font-size: 13px;
+  color: #666;
+}
+
+.pickup-location-selector {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.pickup-location-selector label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.pickup-dropdown {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pickup-dropdown:hover {
+  border-color: #0066ff;
+}
+
+.pickup-dropdown:focus {
+  outline: none;
+  border-color: #0066ff;
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.pickup-info {
+  margin-top: 12px;
+  padding: 12px;
+  background: #f8f9ff;
+  border-radius: 8px;
+  border-left: 4px solid #0066ff;
+}
+
+.pickup-address {
+  font-size: 14px;
+  color: #333;
+  margin: 0 0 8px 0;
+  font-weight: 500;
+}
+
+.pickup-hours {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+}
+
+.special-note-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.special-note-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #000;
+}
+
+.special-note-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.special-note-textarea:focus {
+  outline: none;
+  border-color: #0066ff;
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.special-note-textarea::placeholder {
+  color: #999;
+}
+
+.character-count {
+  text-align: right;
+  font-size: 12px;
+  color: #999;
+  margin-top: 6px;
 }
 
 .cart-summary {
