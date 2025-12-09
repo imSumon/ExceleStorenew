@@ -892,6 +892,8 @@ const closeMobileMenu = () => {
   flex-direction: column;
   position: relative;
   height: 689.48px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .product-badge-new {
@@ -1035,7 +1037,7 @@ const closeMobileMenu = () => {
 .product-colors {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .color-option {
@@ -1062,7 +1064,7 @@ const closeMobileMenu = () => {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .storage-option {
@@ -1088,8 +1090,8 @@ const closeMobileMenu = () => {
 }
 
 .product-pricing {
-  margin-bottom: 16px;
-  padding: 12px 0;
+  margin-bottom: 12px;
+  padding: 10px 0;
   border-top: 1px solid #e0e0e0;
   border-bottom: 1px solid #e0e0e0;
 }
@@ -1121,14 +1123,14 @@ const closeMobileMenu = () => {
 .product-card-actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   margin-top: auto;
 }
 
 .btn-buy-now,
 .btn-learn-more {
   width: 100%;
-  padding: 12px 20px;
+  padding: 10px 20px;
   border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
@@ -1217,7 +1219,7 @@ const closeMobileMenu = () => {
   font-size: 13px;
   color: #000;
   cursor: pointer;
-  padding: 8px 0;
+  padding: 4px 0;
   margin: 0;
   justify-content: flex-start;
 }
