@@ -12,6 +12,7 @@ export interface CartItem {
   color: string;
   discountPercent?: number;
   productId?: string;
+  fullCoverage?: boolean;
 }
 
 export interface EMIPlan {
@@ -99,7 +100,11 @@ export const useCart = () => {
   };
 
   const subtotal = computed(() => {
-    return state.items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return state.items.reduce((total, item) => {
+      const itemTotal = item.price * item.quantity;
+      const coverageCharge = item.fullCoverage ? 5000 : 0;
+      return total + itemTotal + coverageCharge;
+    }, 0);
   });
 
   const productDiscounts = computed(() => {

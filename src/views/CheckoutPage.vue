@@ -149,7 +149,11 @@
             <div class="summary-totals">
               <div class="summary-row">
                 <span>Subtotal</span>
-                <span>৳{{ cartTotal.toLocaleString() }}</span>
+                <span>৳{{ itemsSubtotal.toLocaleString() }}</span>
+              </div>
+              <div v-if="fullCoverageCharge > 0" class="summary-row">
+                <span>Full Coverage Protection</span>
+                <span>৳{{ fullCoverageCharge.toLocaleString() }}</span>
               </div>
               <div class="summary-row">
                 <span>Shipping</span>
@@ -179,6 +183,16 @@ import { useCart } from '../store/cartStore'
 
 const router = useRouter()
 const { items, cartTotal, clearCart, selectedEMI } = useCart()
+
+const itemsSubtotal = computed(() => {
+  return items.value.reduce((total, item) => total + (item.price * item.quantity), 0)
+})
+
+const fullCoverageCharge = computed(() => {
+  return items.value.reduce((total, item) => {
+    return total + (item.fullCoverage ? 5000 : 0)
+  }, 0)
+})
 
 const formData = ref({
   email: '',

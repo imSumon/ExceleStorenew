@@ -224,11 +224,11 @@
             <div class="care-options">
               <div class="care-label">We Care:</div>
               <div class="care-item">
-                <input type="checkbox" id="screen-replacement">
+                <input type="checkbox" id="screen-replacement" v-model="screenReplacement">
                 <label for="screen-replacement">1 Year screen replacement (Free)</label>
               </div>
               <div class="care-item">
-                <input type="checkbox" id="full-coverage">
+                <input type="checkbox" id="full-coverage" v-model="fullCoverage">
                 <label for="full-coverage">1 Year Full Coverage (TK. 5000)</label>
               </div>
               <div class="care-note">
@@ -337,6 +337,8 @@ const selectedColor = ref(product.value.colors[0])
 const quantity = ref(1)
 const paymentType = ref('discount')
 const emiAccordionOpen = ref(false)
+const screenReplacement = ref(false)
+const fullCoverage = ref(false)
 
 const thumbnailContainer = ref<HTMLElement | null>(null)
 const storageContainer = ref<HTMLElement | null>(null)
@@ -495,7 +497,8 @@ const handleAddToCart = () => {
     ram: selectedRam.value,
     color: selectedColor.value,
     discountPercent: discountPercent,
-    productId: String(product.value.id)
+    productId: String(product.value.id),
+    fullCoverage: fullCoverage.value
   })
 
   router.push('/cart')

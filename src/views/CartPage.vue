@@ -28,9 +28,15 @@
                     <span class="original-price">৳{{ item.originalPrice.toLocaleString() }}</span>
                     <span v-if="item.discountPercent" class="discount-badge">{{ item.discountPercent.toFixed(0) }}% OFF</span>
                   </div>
-                  <div v-if="selectedEMI" class="emi-badge">
-                    <span class="emi-icon">💳</span>
-                    <span>EMI Selected</span>
+                  <div class="badges-row">
+                    <div v-if="item.fullCoverage" class="coverage-badge">
+                      <span class="coverage-icon">🛡️</span>
+                      <span>Full Coverage (+৳5,000)</span>
+                    </div>
+                    <div v-if="selectedEMI" class="emi-badge">
+                      <span class="emi-icon">💳</span>
+                      <span>EMI Selected</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -491,6 +497,29 @@ const handleRemoveCoupon = () => {
   border-radius: 4px;
   font-size: 11px;
   font-weight: 600;
+}
+
+.badges-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.coverage-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.coverage-icon {
+  font-size: 16px;
 }
 
 .emi-badge {
