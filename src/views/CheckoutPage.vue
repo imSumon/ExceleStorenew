@@ -61,14 +61,21 @@
 
           <div class="form-section">
             <h2>Payment Method</h2>
+            <div v-if="selectedEMI" class="emi-payment-notice">
+              <span class="notice-icon">💳</span>
+              <div>
+                <strong>EMI Payment Selected</strong>
+                <p>Only Credit/Debit Card payment is available for EMI orders</p>
+              </div>
+            </div>
             <div class="payment-methods">
-              <label class="payment-option">
-                <input type="radio" v-model="formData.paymentMethod" value="cod">
+              <label class="payment-option" :class="{ disabled: selectedEMI }">
+                <input type="radio" v-model="formData.paymentMethod" value="cod" :disabled="!!selectedEMI">
                 <div class="payment-card">
                   <span class="payment-icon">💵</span>
                   <div>
                     <div class="payment-title">Cash on Delivery</div>
-                    <div class="payment-desc">Pay when you receive</div>
+                    <div class="payment-desc">{{ selectedEMI ? 'Not available for EMI' : 'Pay when you receive' }}</div>
                   </div>
                 </div>
               </label>
@@ -78,17 +85,17 @@
                   <span class="payment-icon">💳</span>
                   <div>
                     <div class="payment-title">Credit/Debit Card</div>
-                    <div class="payment-desc">Secure payment</div>
+                    <div class="payment-desc">{{ selectedEMI ? 'Required for EMI payment' : 'Secure payment' }}</div>
                   </div>
                 </div>
               </label>
-              <label class="payment-option">
-                <input type="radio" v-model="formData.paymentMethod" value="bkash">
+              <label class="payment-option" :class="{ disabled: selectedEMI }">
+                <input type="radio" v-model="formData.paymentMethod" value="bkash" :disabled="!!selectedEMI">
                 <div class="payment-card">
                   <span class="payment-icon">📱</span>
                   <div>
                     <div class="payment-title">bKash</div>
-                    <div class="payment-desc">Mobile payment</div>
+                    <div class="payment-desc">{{ selectedEMI ? 'Not available for EMI' : 'Mobile payment' }}</div>
                   </div>
                 </div>
               </label>
@@ -166,12 +173,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCart } from '../store/cartStore'
 
 const router = useRouter()
-const { items, cartTotal, clearCart } = useCart()
+const { items, cartTotal, clearCart, selectedEMI } = useCart()
 
 const formData = ref({
   email: '',
@@ -182,11 +189,17 @@ const formData = ref({
   city: '',
   postalCode: '',
   district: '',
-  paymentMethod: 'cod',
+  paymentMethod: selectedEMI.value ? 'card' : 'cod',
   cardNumber: '',
   expiryDate: '',
   cvv: '',
   bkashNumber: ''
+})
+
+watch(selectedEMI, (newEMI) => {
+  if (newEMI) {
+    formData.value.paymentMethod = 'card'
+  }
 })
 
 const isFormValid = computed(() => {
@@ -301,6 +314,34 @@ const placeOrder = () => {
   gap: 16px;
 }
 
+.emi-payment-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border-left: 4px solid #2196f3;
+}
+
+.notice-icon {
+  font-size: 28px;
+}
+
+.emi-payment-notice strong {
+  display: block;
+  font-size: 15px;
+  color: #1565c0;
+  margin-bottom: 4px;
+}
+
+.emi-payment-notice p {
+  margin: 0;
+  font-size: 13px;
+  color: #424242;
+}
+
 .payment-methods {
   display: flex;
   flex-direction: column;
@@ -309,6 +350,20 @@ const placeOrder = () => {
 
 .payment-option {
   cursor: pointer;
+}
+
+.payment-option.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.payment-option.disabled .payment-card {
+  cursor: not-allowed;
+  background: #f9f9f9;
+}
+
+.payment-option.disabled .payment-card:hover {
+  border-color: #ddd;
 }
 
 .payment-option input[type="radio"] {
