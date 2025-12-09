@@ -11,65 +11,51 @@
       </div>
 
       <div v-else class="cart-content">
-        <div class="cart-items">
-          <div v-for="item in items" :key="item.id" class="cart-item">
-            <img :src="item.image" :alt="item.name" class="item-image">
-            <div class="item-details">
-              <h3 class="item-name">{{ item.name }}</h3>
-              <div class="item-specs">
-                <span>Storage: {{ item.storage }}</span>
-                <span>RAM: {{ item.ram }}</span>
-                <span>Color: <span class="color-dot" :style="{ backgroundColor: item.color }"></span></span>
+        <div class="cart-left">
+          <div class="cart-items">
+            <div v-for="item in items" :key="item.id" class="cart-item">
+              <img :src="item.image" :alt="item.name" class="item-image">
+              <div class="item-info">
+                <h3 class="item-name">{{ item.name }}</h3>
+                <div class="item-specs">
+                  <span>Storage: {{ item.storage }}</span>
+                  <span>RAM: {{ item.ram }}</span>
+                  <span>Color: <span class="color-dot" :style="{ backgroundColor: item.color }"></span></span>
+                </div>
+                <div class="item-price-row">
+                  <div class="item-price">
+                    <span class="current-price">৳{{ item.price.toLocaleString() }}</span>
+                    <span class="original-price">৳{{ item.originalPrice.toLocaleString() }}</span>
+                    <span v-if="item.discountPercent" class="discount-badge">{{ item.discountPercent.toFixed(0) }}% OFF</span>
+                  </div>
+                  <div v-if="selectedEMI" class="emi-badge">
+                    <span class="emi-icon">💳</span>
+                    <span>EMI Selected</span>
+                  </div>
+                </div>
               </div>
-              <div class="item-price">
-                <span class="current-price">৳{{ item.price.toLocaleString() }}</span>
-                <span class="original-price">৳{{ item.originalPrice.toLocaleString() }}</span>
-                <span v-if="item.discountPercent" class="discount-badge">{{ item.discountPercent.toFixed(0) }}% OFF</span>
+              <div class="item-actions">
+                <div class="quantity-control">
+                  <button @click="updateQuantity(item.id, item.quantity - 1)" :disabled="item.quantity <= 1">-</button>
+                  <span>{{ item.quantity }}</span>
+                  <button @click="updateQuantity(item.id, item.quantity + 1)">+</button>
+                </div>
+                <button class="remove-btn" @click="removeFromCart(item.id)">Remove</button>
               </div>
-            </div>
-            <div class="item-actions">
-              <div class="quantity-control">
-                <button @click="updateQuantity(item.id, item.quantity - 1)" :disabled="item.quantity <= 1">-</button>
-                <span>{{ item.quantity }}</span>
-                <button @click="updateQuantity(item.id, item.quantity + 1)">+</button>
-              </div>
-              <button class="remove-btn" @click="removeFromCart(item.id)">Remove</button>
+              <div v-if="appliedCoupon?.giftItem" class="free-gift-badge">Free Gift</div>
             </div>
           </div>
-        </div>
 
-        <div class="cart-sidebar">
-          <div class="coupon-section">
-            <h3>Apply Coupon</h3>
-            <div class="coupon-input-group">
-              <input
-                v-model="couponCode"
-                type="text"
-                placeholder="Enter coupon code"
-                class="coupon-input"
-                :disabled="!!appliedCoupon"
-              >
-              <button
-                v-if="!appliedCoupon"
-                @click="handleApplyCoupon"
-                class="apply-coupon-btn"
-                :disabled="!couponCode || applyingCoupon"
-              >
-                {{ applyingCoupon ? 'Applying...' : 'Apply' }}
-              </button>
-              <button
-                v-else
-                @click="handleRemoveCoupon"
-                class="remove-coupon-btn"
-              >
-                Remove
-              </button>
-            </div>
-            <div v-if="couponError" class="coupon-error">{{ couponError }}</div>
-            <div v-if="appliedCoupon" class="coupon-success">
-              <span class="success-icon">✓</span>
-              <span>Coupon "{{ appliedCoupon.code }}" applied successfully!</span>
-            </div>
+          <div class="special-note-section">
+            <h3>Special Note</h3>
+            <textarea
+              v-model="specialNote"
+              class="special-note-textarea"
+              placeholder="Add delivery instructions or special requests (Optional)"
+              rows="4"
+              maxlength="500"
+            ></textarea>
+            <div class="character-count">{{ specialNote.length }}/500</div>
           </div>
 
           <div class="delivery-options-section">
@@ -114,17 +100,40 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="special-note-section">
-            <h3>Special Note</h3>
-            <textarea
-              v-model="specialNote"
-              class="special-note-textarea"
-              placeholder="Add delivery instructions or special requests (Optional)"
-              rows="4"
-              maxlength="500"
-            ></textarea>
-            <div class="character-count">{{ specialNote.length }}/500</div>
+        <div class="cart-right">
+          <div class="coupon-section">
+            <h3>Apply Coupon</h3>
+            <div class="coupon-input-group">
+              <input
+                v-model="couponCode"
+                type="text"
+                placeholder="ENTER COUPON CODE"
+                class="coupon-input"
+                :disabled="!!appliedCoupon"
+              >
+              <button
+                v-if="!appliedCoupon"
+                @click="handleApplyCoupon"
+                class="apply-coupon-btn"
+                :disabled="!couponCode || applyingCoupon"
+              >
+                {{ applyingCoupon ? 'Applying...' : 'Apply' }}
+              </button>
+              <button
+                v-else
+                @click="handleRemoveCoupon"
+                class="remove-coupon-btn"
+              >
+                Remove
+              </button>
+            </div>
+            <div v-if="couponError" class="coupon-error">{{ couponError }}</div>
+            <div v-if="appliedCoupon" class="coupon-success">
+              <span class="success-icon">✓</span>
+              <span>Coupon "{{ appliedCoupon.code }}" applied successfully!</span>
+            </div>
           </div>
 
           <div class="cart-summary">
@@ -368,8 +377,23 @@ const handleRemoveCoupon = () => {
 
 .cart-content {
   display: grid;
-  grid-template-columns: 1fr 420px;
+  grid-template-columns: 1fr 380px;
   gap: 32px;
+}
+
+.cart-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cart-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 120px;
+  height: fit-content;
 }
 
 .cart-items {
@@ -383,10 +407,11 @@ const handleRemoveCoupon = () => {
   border-radius: 12px;
   padding: 24px;
   display: grid;
-  grid-template-columns: 120px 1fr auto;
-  gap: 24px;
-  align-items: center;
+  grid-template-columns: 100px 1fr auto;
+  gap: 20px;
+  align-items: start;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .cart-item:hover {
@@ -394,22 +419,22 @@ const handleRemoveCoupon = () => {
 }
 
 .item-image {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
   background: #f8f8f8;
   border-radius: 8px;
   padding: 12px;
 }
 
-.item-details {
+.item-info {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
 .item-name {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   color: #000;
   margin: 0;
@@ -418,35 +443,43 @@ const handleRemoveCoupon = () => {
 .item-specs {
   display: flex;
   gap: 16px;
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
   align-items: center;
 }
 
 .color-dot {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   border: 2px solid #ddd;
   vertical-align: middle;
 }
 
+.item-price-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
 .item-price {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .current-price {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 700;
   color: #000;
 }
 
 .original-price {
-  font-size: 16px;
+  font-size: 15px;
   color: #999;
   text-decoration: line-through;
 }
@@ -456,15 +489,44 @@ const handleRemoveCoupon = () => {
   color: #fff;
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
+}
+
+.emi-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.emi-icon {
+  font-size: 16px;
+}
+
+.free-gift-badge {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: linear-gradient(135deg, #fff4e6 0%, #ffe4b5 100%);
+  color: #e65100;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 2px solid #ff9800;
 }
 
 .item-actions {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .quantity-control {
@@ -473,16 +535,16 @@ const handleRemoveCoupon = () => {
   gap: 12px;
   background: #f8f8f8;
   border-radius: 50px;
-  padding: 8px 16px;
+  padding: 6px 14px;
 }
 
 .quantity-control button {
   background: #fff;
   border: 1px solid #ddd;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -500,7 +562,7 @@ const handleRemoveCoupon = () => {
 }
 
 .quantity-control span {
-  min-width: 32px;
+  min-width: 30px;
   text-align: center;
   font-weight: 600;
 }
@@ -520,15 +582,6 @@ const handleRemoveCoupon = () => {
   text-decoration: underline;
 }
 
-.cart-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  position: sticky;
-  top: 120px;
-  height: fit-content;
-}
-
 .coupon-section {
   background: #fff;
   border-radius: 12px;
@@ -536,7 +589,7 @@ const handleRemoveCoupon = () => {
 }
 
 .coupon-section h3 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   margin: 0 0 16px 0;
   color: #000;
@@ -550,12 +603,17 @@ const handleRemoveCoupon = () => {
 .coupon-input {
   flex: 1;
   padding: 12px 16px;
-  border: 2px solid #ddd;
+  border: 2px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
   transition: all 0.3s ease;
+  color: #666;
+}
+
+.coupon-input::placeholder {
+  color: #bbb;
 }
 
 .coupon-input:focus {
@@ -570,19 +628,19 @@ const handleRemoveCoupon = () => {
 
 .apply-coupon-btn {
   padding: 12px 24px;
-  background: #0066ff;
+  background: #6c9aff;
   color: #fff;
   border: none;
   border-radius: 8px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
 }
 
 .apply-coupon-btn:hover:not(:disabled) {
-  background: #0052cc;
+  background: #5a89f0;
 }
 
 .apply-coupon-btn:disabled {
@@ -641,7 +699,7 @@ const handleRemoveCoupon = () => {
 }
 
 .delivery-options-section h3 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   margin: 0 0 16px 0;
   color: #000;
@@ -766,7 +824,7 @@ const handleRemoveCoupon = () => {
 }
 
 .special-note-section h3 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   margin: 0 0 12px 0;
   color: #000;
@@ -804,11 +862,11 @@ const handleRemoveCoupon = () => {
 .cart-summary {
   background: #fff;
   border-radius: 12px;
-  padding: 28px;
+  padding: 24px;
 }
 
 .cart-summary h2 {
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 700;
   margin-bottom: 20px;
   color: #000;
@@ -822,7 +880,7 @@ const handleRemoveCoupon = () => {
   display: flex;
   justify-content: space-between;
   margin-bottom: 12px;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .summary-row span:first-child {
@@ -947,7 +1005,7 @@ const handleRemoveCoupon = () => {
 }
 
 .summary-row.total {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   margin-bottom: 24px;
   padding-top: 8px;
@@ -962,9 +1020,9 @@ const handleRemoveCoupon = () => {
   background: #000;
   color: #fff;
   border: none;
-  padding: 16px;
+  padding: 14px;
   border-radius: 50px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -982,9 +1040,9 @@ const handleRemoveCoupon = () => {
   background: transparent;
   color: #000;
   border: 2px solid #000;
-  padding: 16px;
+  padding: 14px;
   border-radius: 50px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1000,7 +1058,7 @@ const handleRemoveCoupon = () => {
     grid-template-columns: 1fr;
   }
 
-  .cart-sidebar {
+  .cart-right {
     position: static;
   }
 }
@@ -1009,6 +1067,7 @@ const handleRemoveCoupon = () => {
   .cart-item {
     grid-template-columns: 80px 1fr;
     gap: 16px;
+    padding: 20px;
   }
 
   .item-image {
@@ -1020,12 +1079,20 @@ const handleRemoveCoupon = () => {
     grid-column: 1 / -1;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
   }
 
   .item-specs {
     flex-direction: column;
     gap: 4px;
     align-items: flex-start;
+  }
+
+  .free-gift-badge {
+    position: static;
+    grid-column: 1 / -1;
+    width: fit-content;
+    margin-top: 8px;
   }
 }
 </style>
