@@ -32,6 +32,7 @@
                     <div v-if="item.fullCoverage" class="coverage-badge">
                       <span class="coverage-icon">🛡️</span>
                       <span>Full Coverage (+৳5,000)</span>
+                      <button class="remove-coverage-btn" @click="removeCoverage(item.id)" title="Remove Full Coverage">✕</button>
                     </div>
                     <div v-if="selectedEMI" class="emi-badge">
                       <span class="emi-icon">💳</span>
@@ -236,6 +237,7 @@ const {
   items,
   removeFromCart,
   updateQuantity,
+  updateFullCoverage,
   cartCount,
   subtotal,
   productDiscounts,
@@ -267,6 +269,10 @@ const pickupLocations = {
 
 const getPickupAddress = (locationId: string) => {
   return pickupLocations[locationId as keyof typeof pickupLocations] || ''
+}
+
+const removeCoverage = (itemId: string) => {
+  updateFullCoverage(itemId, false)
 }
 
 const handleApplyCoupon = async () => {
@@ -516,10 +522,33 @@ const handleRemoveCoupon = () => {
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
+  position: relative;
 }
 
 .coverage-icon {
   font-size: 16px;
+}
+
+.remove-coverage-btn {
+  background: transparent;
+  border: none;
+  color: #2e7d32;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.remove-coverage-btn:hover {
+  opacity: 1;
+  color: #c62828;
+  transform: scale(1.2);
 }
 
 .emi-badge {

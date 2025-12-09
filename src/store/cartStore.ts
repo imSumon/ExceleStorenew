@@ -81,6 +81,13 @@ export const useCart = () => {
     }
   };
 
+  const updateFullCoverage = (id: string, fullCoverage: boolean) => {
+    const item = state.items.find(item => item.id === id);
+    if (item) {
+      item.fullCoverage = fullCoverage;
+    }
+  };
+
   const clearCart = () => {
     state.items = [];
     state.selectedEMI = null;
@@ -175,6 +182,7 @@ export const useCart = () => {
     addToCart,
     removeFromCart,
     updateQuantity,
+    updateFullCoverage,
     clearCart,
     setEMIPlan,
     applyCoupon,
