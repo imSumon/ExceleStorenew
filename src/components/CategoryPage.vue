@@ -1122,6 +1122,7 @@ const closeMobileMenu = () => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: auto;
 }
 
 .btn-buy-now,
@@ -1214,14 +1215,22 @@ const closeMobileMenu = () => {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #666;
+  color: #000;
   cursor: pointer;
+  padding: 8px 0;
+  margin: 0;
+  justify-content: flex-start;
 }
 
 .compare-checkbox input {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
+  margin: 0;
+}
+
+.compare-checkbox span {
+  font-weight: 500;
 }
 
 .view-more {
