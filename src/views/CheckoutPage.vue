@@ -15,6 +15,10 @@
               <label>Phone Number</label>
               <input type="tel" v-model="formData.phone" placeholder="+880 1XXX-XXXXXX">
             </div>
+            <div class="form-group">
+              <label>Alternative Number <span class="optional-label">(Optional)</span></label>
+              <input type="tel" v-model="formData.alternativePhone" placeholder="+880 1XXX-XXXXXX">
+            </div>
           </div>
 
           <div class="form-section">
@@ -35,8 +39,8 @@
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>City</label>
-                <input type="text" v-model="formData.city" placeholder="City">
+                <label>Area/Thana</label>
+                <input type="text" v-model="formData.city" placeholder="e.g., Gulshan 2, Dhanmondi">
               </div>
               <div class="form-group">
                 <label>Postal Code</label>
@@ -197,6 +201,7 @@ const fullCoverageCharge = computed(() => {
 const formData = ref({
   email: '',
   phone: '',
+  alternativePhone: '',
   firstName: '',
   lastName: '',
   address: '',
@@ -304,6 +309,13 @@ const placeOrder = () => {
   font-weight: 600;
   margin-bottom: 8px;
   color: #000;
+}
+
+.optional-label {
+  font-weight: 400;
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
 }
 
 .form-group input,
