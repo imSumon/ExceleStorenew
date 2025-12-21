@@ -125,9 +125,9 @@ const scrollNext = () => {
 }
 
 .story-icon img {
-  width: 200px;
-  height: 200px;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .story-title {
@@ -181,8 +181,8 @@ const scrollNext = () => {
   }
 
   .story-icon img {
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    height: 100%;
   }
 
   .story-title {
@@ -205,8 +205,8 @@ const scrollNext = () => {
   }
 
   .story-icon img {
-    width: 120px;
-    height: 120px;
+    width: 100%;
+    height: 100%;
   }
 }
 </style>
