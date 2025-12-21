@@ -128,7 +128,6 @@ const scrollNext = () => {
   width: 200px;
   height: 200px;
   object-fit: contain;
-  filter: brightness(0) invert(1);
 }
 
 .story-title {

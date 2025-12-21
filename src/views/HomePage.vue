@@ -87,10 +87,10 @@ const recommendedProducts = [
 ]
 
 const stories = [
-  { id: 1, title: 'Smartthings', icon: '/images/icons/Explore_Card1.jpg', bgColor: 'linear-gradient(135deg, #4169E1 0%, #6B8DD6 100%)' },
-  { id: 2, title: 'Why Samsung Smart TV', icon: '/images/icons/Explore_Card2.jpg', bgColor: 'linear-gradient(135deg, #5F9ACF 0%, #A8C5DD 100%)' },
-  { id: 3, title: 'Samsung Health', icon: '/images/icons/Explore_Card3.jpg', bgColor: 'linear-gradient(135deg, #20B2AA 0%, #7DD3CB 100%)' },
-  { id: 4, title: 'Switch to Galaxy', icon: '/images/icons/Explore_Card4.jpg', bgColor: 'linear-gradient(135deg, #6A5ACD 0%, #9B8FD9 100%)' },
-  { id: 5, title: 'Gaming TV', icon: '/images/icons/Explore_Card5.jpg', bgColor: 'linear-gradient(135deg, #4682B4 0%, #87ADCE 100%)' }
+  { id: 1, title: 'Smartthings', icon: 'https://images.pexels.com/photos/159304/network-cable-ethernet-computer-159304.jpeg?auto=compress&cs=tinysrgb&w=400', bgColor: 'linear-gradient(135deg, #4169E1 0%, #6B8DD6 100%)' },
+  { id: 2, title: 'Why Samsung Smart TV', icon: 'https://images.pexels.com/photos/1201996/pexels-photo-1201996.jpeg?auto=compress&cs=tinysrgb&w=400', bgColor: 'linear-gradient(135deg, #5F9ACF 0%, #A8C5DD 100%)' },
+  { id: 3, title: 'Samsung Health', icon: 'https://images.pexels.com/photos/40568/medical-appointment-doctor-healthcare-40568.jpeg?auto=compress&cs=tinysrgb&w=400', bgColor: 'linear-gradient(135deg, #20B2AA 0%, #7DD3CB 100%)' },
+  { id: 4, title: 'Switch to Galaxy', icon: 'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=400', bgColor: 'linear-gradient(135deg, #6A5ACD 0%, #9B8FD9 100%)' },
+  { id: 5, title: 'Gaming TV', icon: 'https://images.pexels.com/photos/442576/pexels-photo-442576.jpeg?auto=compress&cs=tinysrgb&w=400', bgColor: 'linear-gradient(135deg, #4682B4 0%, #87ADCE 100%)' }
 ]
 </script>
