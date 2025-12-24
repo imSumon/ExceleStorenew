@@ -3,14 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Samsung India - Explore the latest in smartphones, TVs, home appliances and more" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="manifest" href="/manifest.json" />
-    <title>Responsive Vue PWA Site Home Page</title>
+    <title>ExceleStore - Samsung E-Commerce</title>
+    <style>
+      #app {
+        min-height: 100vh;
+      }
+      .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        font-family: sans-serif;
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div class="loading">Loading...</div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
