@@ -73,8 +73,10 @@ defineProps<Props>()
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
-  width: 342px;
-  height: 342px;
+  width: 100%;
+  max-width: 342px;
+  aspect-ratio: 1;
+  margin: 0 auto;
 }
 
 .product-card:hover {
@@ -84,8 +86,8 @@ defineProps<Props>()
 
 .product-content {
   position: relative;
-  width: 342px;
-  height: 342px;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   padding: 24px;
@@ -184,40 +186,42 @@ defineProps<Props>()
 
   .products-grid {
     gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
 
   .product-content {
-    padding: 20px;
-    width: 100%;
-    height: 100%;
+    padding: 16px;
   }
 
   .product-card {
-    width: 280px;
-    height: 280px;
+    max-width: 100%;
   }
 
   .product-name {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .product-description {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .product-image img {
-    max-height: 240px;
+    max-height: 180px;
   }
 
   .buy-button {
-    padding: 12px 40px;
+    padding: 10px 32px;
     font-size: 14px;
+    bottom: 16px;
   }
 }
 
 @media (max-width: 480px) {
+  .products-grid,
   .products-grid.grid-4 {
     grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
   .section-title {
@@ -225,13 +229,11 @@ defineProps<Props>()
   }
 
   .product-content {
-    width: 100%;
-    height: 100%;
+    padding: 20px;
   }
 
   .product-card {
-    width: 240px;
-    height: 240px;
+    max-width: 100%;
   }
 
   .product-name {
@@ -240,6 +242,11 @@ defineProps<Props>()
 
   .product-image img {
     max-height: 200px;
+  }
+
+  .buy-button {
+    opacity: 1;
+    visibility: visible;
   }
 }
 </style>
