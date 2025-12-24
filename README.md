@@ -1,5 +1,54 @@
-# Vue 3 + TypeScript + Vite
+# ExceleStore - Samsung E-Commerce Store
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+A modern, responsive e-commerce Progressive Web App built with Vue 3, TypeScript, and Vite.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## Features
+
+- Responsive design optimized for mobile and desktop
+- Progressive Web App (PWA) capabilities
+- Shopping cart functionality
+- Product catalog with categories
+- Checkout process
+- Supabase backend integration
+
+## Deployment
+
+### Environment Variables
+
+Before deploying, set these environment variables in your hosting platform:
+
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### Deploy to Netlify
+
+1. Push your code to GitHub
+2. Connect your repository to Netlify
+3. Build settings are already configured in `netlify.toml`
+4. Add environment variables in Netlify dashboard
+5. Deploy
+
+### Deploy to Vercel
+
+1. Push your code to GitHub
+2. Import project in Vercel
+3. Build settings are already configured in `vercel.json`
+4. Add environment variables in Vercel dashboard
+5. Deploy
+
+## Local Development
+
+```bash
+npm install
+npm run dev
+```
+
+## Build for Production
+
+```bash
+npm run build
+```
+
+The built files will be in the `dist` folder.
